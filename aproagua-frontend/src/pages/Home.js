@@ -12,7 +12,7 @@ function Home() {
             <p className="main-description">
               Únete a Aproagua en nuestra misión de llevar agua potable de calidad a cada hogar y comunidad. Por un futuro más saludable y sostenible, donde cada gota cuenta.
             </p>
-            <Link to="/quienes-somos" className="btn">QUIENES SOMOS</Link>
+            
           </div>
           
         </div>
