@@ -14,11 +14,27 @@
 
 /* Contenedor del contenido del modal */
 .login-modal-content {
+    position: relative;
     background-color: white;
     padding: 20px;
     border-radius: 10px;
     width: 400px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos de la "X" roja */
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: darkred;
 }
 
 .login-modal-content h2 {

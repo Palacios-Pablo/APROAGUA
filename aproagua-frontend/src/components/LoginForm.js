@@ -5,6 +5,8 @@ const LoginForm = ({ onClose }) => {
     return (
         <div className="login-modal-overlay">
             <div className="login-modal-content">
+                {/* Agregar la "X" roja para cerrar el modal */}
+                <span className="close-modal" onClick={onClose}>&times;</span>
                 <h2>Bienvenido</h2>
                 <form>
                     <div className="form-group">
@@ -17,7 +19,6 @@ const LoginForm = ({ onClose }) => {
                     </div>
                     <button type="submit" className="btn btn-primary">Ingresar</button>
                 </form>
-                <button className="btn btn-secondary" onClick={onClose}>Cerrar</button>
             </div>
         </div>
     );
