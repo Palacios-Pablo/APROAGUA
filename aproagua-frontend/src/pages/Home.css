@@ -1,0 +1,99 @@
+.home-container {
+  position: relative;
+  min-height: calc(100vh - 70px);
+  padding-top: 50px;
+  z-index: 1; /* Asegura que el contenedor esté sobre otros elementos */
+}
+
+.main-title {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.main-description {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.wave-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 0; /* Envía la onda SVG al fondo */
+}
+
+.wave-container svg {
+  display: block;
+}
+
+/* Estilos para el botón de "Ingresar" */
+.btn {
+  background-color: #007bff; /* Color de fondo */
+  color: white; /* Color del texto */
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer; /* Asegura que el botón sea interactivo */
+  z-index: 2; /* Asegura que esté por encima de otros elementos */
+}
+
+.btn:hover {
+  background-color: #0056b3; /* Color del botón al pasar el mouse */
+}
+
+.col-md-6 {
+  position: relative;
+  z-index: 2; /* Asegura que el contenido de la columna esté por encima */
+}
+
+html, body { height: 100%; }
+body {
+  background:radial-gradient(ellipse at center, rgba(255,254,234,1) 0%, rgba(255,254,234,1) 35%, #B7E8EB 100%);
+  overflow: hidden;
+}
+
+.ocean { 
+  height: 5%;
+  width:100%;
+  position:absolute;
+  bottom:0;
+  left:0;
+  background: #015871;
+}
+
+.wave {
+  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg) repeat-x; 
+  position: absolute;
+  top: -198px;
+  width: 6400px;
+  height: 198px;
+  animation: wave 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
+  transform: translate3d(0, 0, 0);
+}
+
+.wave:nth-of-type(2) {
+  top: -175px;
+  animation: wave 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+  opacity: 1;
+}
+
+@keyframes wave {
+  0% {
+    margin-left: 0;
+  }
+  100% {
+    margin-left: -1600px;
+  }
+}
+
+@keyframes swell {
+  0%, 100% {
+    transform: translate3d(0,-25px,0);
+  }
+  50% {
+    transform: translate3d(0,5px,0);
+  }
+}

@@ -1,0 +1,71 @@
+/* Estilos generales del Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #ffffff; /* Fondo blanco */
+    height: 100vh; /* Altura completa */
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Espacio entre menú y botón de salir */
+}
+
+.sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav ul li {
+    margin: 15px 0;
+}
+
+.sidebar nav ul li a {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #007BFF; /* Azul celeste para el texto */
+    font-weight: 500;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar nav ul li a:hover {
+    background-color: #f0f8ff; /* Azul celeste suave al pasar el mouse */
+}
+
+.sidebar nav ul li a i {
+    margin-right: 10px;
+    color: #007BFF; /* Iconos también en azul celeste */
+}
+
+.logout-button {
+    background-color: #007BFF; /* Azul celeste para el botón */
+    color: #fff;
+    border: none;
+    padding: 10px;
+    margin: 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+
+.logout-button:focus {
+    outline: none;
+}
+
+/* Diseño responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+}

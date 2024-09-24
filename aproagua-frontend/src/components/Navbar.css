@@ -1,0 +1,59 @@
+/* Estilos generales del navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Espacio entre la marca, enlaces y botón */
+    align-items: center; /* Alineación vertical */
+    padding: 1rem 2rem; /* Espaciado interno */
+    background-color: #fff; /* Color de fondo */
+    width: 100%;
+}
+
+/* Estilos para la marca (APROAGUA) */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000; /* Ajusta el color de la marca */
+    text-decoration: none;
+}
+
+/* Contenedor de enlaces del navbar */
+.navbar-links {
+    display: flex;
+    gap: 2rem; /* Espacio entre los enlaces */
+}
+
+/* Estilos para los enlaces del navbar */
+.nav-link {
+    text-decoration: none; /* Elimina el subrayado */
+    color: #000; /* Color del texto */
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Cambiar el color de los enlaces al pasar el mouse */
+.nav-link:hover {
+    color: #007bff; /* Cambia el color al hacer hover */
+}
+
+/* Estilos del botón dentro del navbar */
+.navbar .btn {
+    background-color: #007bff; /* Color del botón */
+    color: white;               /* Color del texto del botón */
+    padding: 8px 16px;          /* Espaciado interno */
+    border: none;               /* Sin borde */
+    border-radius: 4px;         /* Bordes redondeados */
+    font-size: 16px;            /* Tamaño de fuente */
+    cursor: pointer;            /* Cursor de puntero */
+    text-align: center;         /* Aseguramos que el texto esté centrado */
+}
+
+.navbar .btn:hover {
+    background-color: #0056b3;  /* Color cuando pasas el mouse por encima */
+}
+
+/* Asegúrate de que el botón no ocupe toda la barra */
+.navbar .btn {
+    display: inline-block;     /* Mostrar como un bloque en línea */
+    width: auto;               /* Ajustar el tamaño según el contenido */
+    margin-left: auto;         /* Empujar el botón hacia la derecha */
+}
