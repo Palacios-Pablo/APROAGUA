@@ -1,4 +1,4 @@
-const pool = require('../config/dbConfig');
+const pool = require('../config/dbconfig');
 
 // Obtener todos los registros de consumo
 exports.getConsumos = async (req, res) => {

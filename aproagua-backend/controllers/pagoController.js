@@ -1,4 +1,4 @@
-const pool = require('../config/dbConfig');
+const pool = require('../config/dbconfig');
 
 // Obtener todos los pagos
 exports.getPagos = async (req, res) => {
