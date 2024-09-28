@@ -1,4 +1,4 @@
-const pool = require('../config/dbConfig');
+const pool = require('../config/dbconfig');
 
 // Obtener todas las facturas
 exports.getFacturas = async (req, res) => {
