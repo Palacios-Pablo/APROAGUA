@@ -1,6 +1,6 @@
 const PDFDocument = require('pdfkit');
 const ExcelJS = require('exceljs'); 
-const pool = require('../config/dbConfig');
+const pool = require('../config/dbconfig');
 
 
 // Generar un reporte en Excel para los clientes
