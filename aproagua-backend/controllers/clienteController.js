@@ -46,9 +46,16 @@ exports.updateCliente = async (req, res) => {
     const { id } = req.params;
     const { nombre, apellido, numero_telefono, direccion, id_zona } = req.body;
 
+    // Verificar que los parámetros existan
+    if (!nombre || !apellido || !numero_telefono || !direccion || !id_zona) {
+        return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
+    }
+
     try {
-        const [result] = await pool.execute('UPDATE Cliente SET Nombre = ?, Apellido = ?, Numero_Telefono = ?, Direccion = ?, ID_Zona = ? WHERE ID_Cliente = ?', 
-            [nombre, apellido, numero_telefono, direccion, id_zona, id]);
+        const [result] = await pool.execute(
+            'UPDATE Cliente SET Nombre = ?, Apellido = ?, Numero_Telefono = ?, Direccion = ?, ID_Zona = ? WHERE ID_Cliente = ?', 
+            [nombre, apellido, numero_telefono, direccion, id_zona, id]
+        );
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ msg: 'Cliente no encontrado' });
