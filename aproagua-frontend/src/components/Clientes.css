@@ -1,0 +1,215 @@
+/* src/components/Clientes.css */
+
+/* Estilo para el contenedor principal */
+.content-wrapper {
+    padding: 20px;
+    background-color: #f4f6f9;
+    min-height: 100vh;
+}
+
+/* Título principal */
+h1 {
+    font-size: 2rem;
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+
+button {
+    font-size: 0.9rem;  /* Ajusta el tamaño de la fuente */
+    color: white;  /* Texto blanco por defecto */
+}
+
+
+/* Botón "Agregar Cliente" */
+button.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 8px 16px;  /* Reducimos el padding para que sea más compacto */
+    font-size: 0.9rem;  /* Reducimos el tamaño de la fuente ligeramente */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;  /* Mantener el texto en una sola línea */
+    width: auto;  /* El ancho se ajusta dinámicamente */
+    min-width: 130px;  /* Reducimos el ancho mínimo para hacerlo más pequeño */
+}
+
+
+button.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo general para la tabla */
+table.table {
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+table.table th,
+table.table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+table.table th {
+    background-color: #007bff;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+}
+
+table.table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Estilos para los botones de acción (Editar, Eliminar) */
+/* Estilos para los botones de acción (Editar, Eliminar) alineados horizontalmente */
+button.btn-warning,
+button.btn-danger {
+    padding: 5px 8px;  /* Reducimos el padding para hacerlos más pequeños */
+    font-size: 1rem;   /* Reducimos el tamaño del ícono */
+    border-radius: 5px;
+    width: 35px;  /* Hacemos el botón más estrecho */
+    margin-right: 5px;  /* Espacio entre los botones */
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+
+button.btn-warning {
+    background-color: #ffc107;
+}
+
+button.btn-danger {
+    background-color: #dc3545;
+}
+button.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+button.btn-danger:hover {
+    background-color: #c82333;
+}
+
+button.btn-warning svg,
+button.btn-danger svg {
+    margin-right: 0;  /* Remover margen adicional alrededor del ícono */
+}
+
+
+/* Estilos para el modal */
+.react-modal-content {
+    background-color: white;
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+.react-modal-header {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #343a40;
+}
+
+.react-modal-body {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #343a40;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #80bdff;
+}
+
+
+
+/* Contenedor de los botones para alineación */
+.modal-buttons {
+    display: flex;              /* Flexbox para alinearlos en fila */
+    justify-content: flex-start;  /* Espaciado entre los botones */
+    align-items: center;        /* Asegura que estén alineados verticalmente */
+    gap: 10px;                  /* Espacio entre los botones */
+}
+
+/* Botones específicos para los modales */
+button.modal-btn-primary,
+button.modal-btn-secondary {
+    width: 120px;  /* Aseguramos que ambos botones tengan el mismo ancho */
+    border: none;
+    padding: 8px 16px;  /* Hacemos el padding más consistente */
+    font-size: 0.9rem;  /* Ajustamos el tamaño del texto para que sea igual */
+    border-radius: 5px;  /* Mantenemos las esquinas redondeadas */
+    display: inline-block;
+    transition: background-color 0.3s ease;
+
+    text-align: center;  /* Centramos el texto dentro del botón */
+}
+
+button.modal-btn-primary {
+    background-color: #007bff;
+}
+
+button.modal-btn-secondary {
+    background-color: #6c757d;
+}
+
+button.modal-btn-primary:hover {
+    background-color: #0056b3;
+}
+
+button.modal-btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* TABLA CON SCROLL */
+
+.table-responsive {
+    max-height: 400px;  /* Ajusta el tamaño según sea necesario */
+    overflow-y: auto;   /* Permitir desplazamiento solo en el eje vertical */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
