@@ -39,18 +39,19 @@ const Clientes = () => {
         setIsModalOpen(true);
     };
 
-    const handleEliminarCliente = async (id) => {
+    const handleEliminarCliente = async (id_cliente) => {
         if (window.confirm('¿Estás seguro de eliminar este cliente?')) {
             try {
-                await axios.delete(`http://localhost:3000/api/clientes/${id}`, {
+                await axios.delete(`http://localhost:3000/api/clientes/${id_cliente}`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
-                setClientes(clientes.filter(cliente => cliente.ID_Cliente !== id));
+                setClientes(clientes.filter(cliente => cliente.ID_Cliente !== id_cliente));
             } catch (err) {
-                console.error('Error al eliminar cliente', err);
+                console.error('Error al eliminar cliente', err.response || err);  // Imprimir más detalles del error
             }
         }
     };
+    
 
     const handleAsignarTarifa = (cliente) => {
         setClienteParaTarifa(cliente);
@@ -108,17 +109,18 @@ const Clientes = () => {
                                             >
                                                 <FontAwesomeIcon icon={faTrashAlt} size="lg" /> {/* Icono de eliminar */}
                                             </button>
+
+                                            <button
+                                                className="btn btn-history"
+                                                onClick={() => handleVerHistorialTarifas(cliente.ID_Cliente)}
+                                            >
+                                                <FontAwesomeIcon icon={faHistory} size="lg" /> {/* Icono de historial */}
+                                            </button>
                                             <button
                                                 className="btn btn-info"
                                                 onClick={() => handleAsignarTarifa(cliente)}
                                             >
                                                 Asignar Tarifa
-                                            </button>
-                                            <button
-                                                className="btn btn-secondary"
-                                                onClick={() => handleVerHistorialTarifas(cliente.ID_Cliente)}
-                                            >
-                                                <FontAwesomeIcon icon={faHistory} size="lg" /> {/* Icono de historial */}
                                             </button>
                                         </td>
                                     </tr>
@@ -126,11 +128,12 @@ const Clientes = () => {
                             </tbody>
                         </table>
                     </div>
-
+                    
                     {/* Mostrar el historial de tarifas si se selecciona un cliente */}
                     {historialTarifas.length > 0 && (
                         <div className="historial-tarifas">
                             <h2>Historial de Tarifas</h2>
+                            <div className="table-responsive">
                             <table className="table table-bordered">
                                 <thead>
                                     <tr>
@@ -151,6 +154,7 @@ const Clientes = () => {
                                     ))}
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     )}
 
