@@ -69,22 +69,30 @@ exports.updateCliente = async (req, res) => {
 };
 
 // Eliminar un cliente
-exports.deleteCliente = async (req, res) => {
+// Cambia `id_cliente` por `id` para que coincida con la ruta
+exports.eliminarCliente = async (req, res) => {
     const { id } = req.params;
 
+    console.log('ID recibido en el backend:', id);  // Depuración
+
+    if (!id) {
+        return res.status(400).json({ msg: 'ID del cliente no proporcionado' });
+    }
+
     try {
-        const [result] = await pool.execute('DELETE FROM Cliente WHERE ID_Cliente = ?', [id]);
+        // Primero eliminar las referencias en la tabla cliente_tarifa
+        await pool.execute('DELETE FROM Cliente_Tarifa WHERE ID_Cliente = ?', [id]);
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ msg: 'Cliente no encontrado' });
-        }
+        // Luego eliminar al cliente de la tabla cliente
+        await pool.execute('DELETE FROM Cliente WHERE ID_Cliente = ?', [id]);
 
-        res.json({ msg: 'Cliente eliminado exitosamente' });
+        res.status(200).json({ msg: 'Cliente eliminado correctamente' });
     } catch (err) {
         console.error('Error al eliminar cliente:', err);
         res.status(500).json({ msg: 'Error del servidor' });
     }
 };
+
 
 
 // Asignar tarifa a un cliente

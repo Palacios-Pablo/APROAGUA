@@ -70,13 +70,13 @@ exports.eliminarTarifa = async (req, res) => {
     const { id_tarifa } = req.params;
 
     try {
-        const [result] = await pool.execute('DELETE FROM Tarifa WHERE ID_Tarifa = ?', [id_tarifa]);
+        // Eliminar las referencias de la tarifa en la tabla cliente_tarifa
+        await pool.execute('DELETE FROM Cliente_Tarifa WHERE ID_Tarifa = ?', [id_tarifa]);
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ msg: 'Tarifa no encontrada' });
-        }
+        // Luego, eliminar la tarifa de la tabla tarifa
+        await pool.execute('DELETE FROM Tarifa WHERE ID_Tarifa = ?', [id_tarifa]);
 
-        res.json({ msg: 'Tarifa eliminada exitosamente' });
+        res.status(200).json({ msg: 'Tarifa eliminada correctamente' });
     } catch (err) {
         console.error('Error al eliminar tarifa:', err);
         res.status(500).json({ msg: 'Error del servidor' });
