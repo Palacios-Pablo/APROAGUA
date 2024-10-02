@@ -85,3 +85,44 @@ exports.deleteCliente = async (req, res) => {
         res.status(500).json({ msg: 'Error del servidor' });
     }
 };
+
+
+// Asignar tarifa a un cliente
+exports.asignarTarifa = async (req, res) => {
+    const { id_cliente, id_tarifa, fecha_inicio, fecha_fin } = req.body;
+
+    try {
+        // Asignar la tarifa al cliente en la tabla Cliente_Tarifa
+        await pool.execute(
+            'INSERT INTO Cliente_Tarifa (ID_Cliente, ID_Tarifa, Fecha_Inicio, Fecha_Fin) VALUES (?, ?, ?, ?)', 
+            [id_cliente, id_tarifa, fecha_inicio, fecha_fin || null]  // Si no hay fecha_fin, asignamos null
+        );
+        res.status(201).json({ msg: 'Tarifa asignada exitosamente' });
+    } catch (err) {
+        console.error('Error al asignar tarifa:', err);
+        res.status(500).json({ msg: 'Error del servidor' });
+    }
+};
+
+
+// Obtener el historial de tarifas de un cliente
+exports.historialTarifas = async (req, res) => {
+    const { id_cliente } = req.params;
+
+    try {
+        // Obtener el historial de tarifas de la tabla Cliente_Tarifa
+        const [rows] = await pool.execute(
+            'SELECT * FROM Cliente_Tarifa WHERE ID_Cliente = ?', 
+            [id_cliente]
+        );
+        if (rows.length === 0) {
+            return res.status(404).json({ msg: 'No se encontró historial de tarifas para este cliente' });
+        }
+        res.json(rows);
+    } catch (err) {
+        console.error('Error al obtener historial de tarifas:', err);
+        res.status(500).json({ msg: 'Error del servidor' });
+    }
+};
+
+
