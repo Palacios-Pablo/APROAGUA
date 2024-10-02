@@ -1,10 +1,19 @@
+// src/routes/consumoRoutes.js
 const express = require('express');
-const { getConsumos, createConsumo } = require('../controllers/consumoController');
-const authMiddleware = require('../middlewares/authMiddleware');  // Proteger las rutas con autenticación
+const { registrarConsumo, obtenerConsumosPorCliente, editarConsumo, eliminarConsumo } = require('../controllers/consumoController');
+const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router();
 
-// Rutas de consumo protegidas
-router.get('/', authMiddleware, getConsumos);               // Obtener todos los consumos
-router.post('/', authMiddleware, createConsumo);            // Registrar un nuevo consumo
+// Registrar un nuevo consumo
+router.post('/', authMiddleware, registrarConsumo);
+
+// Obtener el historial de consumo de un cliente
+router.get('/:id_cliente', authMiddleware, obtenerConsumosPorCliente);
+
+// Editar un consumo
+router.put('/:id_consumo', authMiddleware, editarConsumo);
+
+// Eliminar un consumo
+router.delete('/:id_consumo', authMiddleware, eliminarConsumo);
 
 module.exports = router;
