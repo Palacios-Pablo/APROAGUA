@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');  // Ya has importado cors
+const tarifaRoutes = require('./routes/tarifaRoutes'); 
 const clienteRoutes = require('./routes/clienteRoutes');
 const consumoRoutes = require('./routes/consumoRoutes');
 const facturaRoutes = require('./routes/facturaRoutes');
@@ -26,6 +27,7 @@ app.use('/api/facturas', facturaRoutes);
 app.use('/api/pagos', pagoRoutes);
 app.use('/api/reportes', reporteRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/tarifas', tarifaRoutes); 
 
 // Ruta protegida de ejemplo
 app.get('/api/protegida', authMiddleware, (req, res) => {

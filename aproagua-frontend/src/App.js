@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Servicios from './pages/Servicios';
 import Contacto from './pages/Contacto';
 import QuienesSomos from './pages/QuienesSomos';
+import Tarifas from './pages/Tarifas';
 
 // Páginas del sistema de gestión
 import DashboardPage from './pages/DashboardPage';
@@ -33,7 +34,8 @@ function AppLayout({ children }) {
                        location.pathname.startsWith('/facturacion') || 
                        location.pathname.startsWith('/pagos') || 
                        location.pathname.startsWith('/reportes') || 
-                       location.pathname.startsWith('/finanzas');
+                       location.pathname.startsWith('/finanzas') ||
+                       location.pathname.startsWith('/tarifas');
 
     return (
         <>
@@ -62,6 +64,7 @@ function App() {
                     <Route path="/pagos" element={<DashboardLayout><Pagos /></DashboardLayout>} />
                     <Route path="/reportes" element={<DashboardLayout><Reportes /></DashboardLayout>} />
                     <Route path="/finanzas" element={<DashboardLayout><Finanzas /></DashboardLayout>} />
+                    <Route path="/tarifas" element={<DashboardLayout><Tarifas /></DashboardLayout>} />
                 </Routes>
             </AppLayout>
         </Router>
