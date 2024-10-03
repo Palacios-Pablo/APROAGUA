@@ -1,10 +1,16 @@
+// src/routes/pagoRoutes.js
 const express = require('express');
-const { getPagos, createPago } = require('../controllers/pagoController');
-const authMiddleware = require('../middlewares/authMiddleware');  // Proteger las rutas con autenticación
+const { registrarPago, obtenerPagos, revertirPago } = require('../controllers/pagoController');
+const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router();
 
-// Rutas de pago protegidas
-router.get('/', authMiddleware, getPagos);               // Obtener todos los pagos
-router.post('/', authMiddleware, createPago);            // Registrar un nuevo pago
+// Registrar un nuevo pago
+router.post('/', authMiddleware, registrarPago);
+
+// Obtener el historial de pagos
+router.get('/', authMiddleware, obtenerPagos);
+
+// Revertir un pago
+router.delete('/:id_pago', authMiddleware, revertirPago);
 
 module.exports = router;
