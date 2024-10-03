@@ -1,12 +1,28 @@
+// src/routes/reporteRoutes.js
 const express = require('express');
-const { generarReporteClientesPDF, generarReporteClientesExcel } = require('../controllers/reporteController');
+const {
+    generarReporteIngresos,
+    generarReporteConsumo,
+    generarReporteFacturacion,
+    generarReporteExcel,
+    generarReportePDF
+} = require('../controllers/reporteController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router();
 
-// Ruta para generar el PDF de clientes
-router.get('/clientes/pdf', authMiddleware, generarReporteClientesPDF);
+// Reporte de ingresos
+router.get('/ingresos', authMiddleware, generarReporteIngresos);
 
-// Ruta para generar el Excel de clientes
-router.get('/clientes/excel', authMiddleware, generarReporteClientesExcel);
+// Reporte de consumo
+router.get('/consumo', authMiddleware, generarReporteConsumo);
+
+// Reporte de facturación
+router.get('/facturacion', authMiddleware, generarReporteFacturacion);
+
+// Descargar en Excel
+router.get('/descargar/excel', authMiddleware, generarReporteExcel);
+
+// Descargar en PDF
+router.get('/descargar/pdf', authMiddleware, generarReportePDF);
 
 module.exports = router;
