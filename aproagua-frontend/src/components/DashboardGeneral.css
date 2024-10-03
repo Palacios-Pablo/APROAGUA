@@ -1,0 +1,23 @@
+/* Ajuste en el layout general */
+.dashboard-layout {
+    display: flex;
+    height: 100vh; /* Altura completa de la ventana */
+    overflow: hidden; /* Evita que los elementos dentro del layout tengan barras de desplazamiento adicionales */
+}
+
+.dashboard-content {
+    flex-grow: 1; /* Expande el área de contenido */
+    overflow-y: auto; /* Permite solo una barra de desplazamiento en el contenido principal */
+    padding: 20px;
+    background-color: #f4f6f9;
+    height: 100%; /* Asegura que ocupe toda la altura disponible */
+}
+
+/* No necesitamos overflow en el wrapper interno */
+.content-wrapper {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    /* No necesitas overflow aquí si ya está manejado en .dashboard-content */
+    height: auto; /* Quitar height: 100% si estaba forzando contenedores internos a tener barras de desplazamiento */
+}

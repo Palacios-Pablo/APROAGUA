@@ -1,0 +1,25 @@
+
+.table-responsive {
+    max-height: 100px;  /* Ajusta el tamaño según sea necesario */
+    overflow-y: auto;   /* Permitir desplazamiento solo en el eje vertical */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
