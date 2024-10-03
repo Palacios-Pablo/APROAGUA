@@ -8,6 +8,7 @@ const facturaRoutes = require('./routes/facturaRoutes');
 const pagoRoutes = require('./routes/pagoRoutes');
 const reporteRoutes = require('./routes/reporteRoutes');
 const finanzasRoutes = require('./routes/finanzasRoutes');  
+const dashboardRoutes = require('./routes/dashboardRoutes');
 const authRoutes = require('./routes/authRoutes');
 const authMiddleware = require('./middlewares/authMiddleware');
 
@@ -27,6 +28,7 @@ app.use('/api/consumos', consumoRoutes);
 app.use('/api/facturas', facturaRoutes);
 app.use('/api/pagos', pagoRoutes);
 app.use('/api/reportes', reporteRoutes);
+app.use('/api/dashboard', dashboardRoutes); 
 app.use('/api/finanzas', finanzasRoutes); 
 app.use('/api/auth', authRoutes);
 app.use('/api/tarifas', tarifaRoutes); 

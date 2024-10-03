@@ -23,7 +23,7 @@ const LoginForm = ({ onClose }) => {
     
             const { token } = res.data;
             localStorage.setItem('token', token);
-            window.location.href = '/clientes';
+            window.location.href = '/dashboard';
         } catch (err) {
             console.error('Error en el inicio de sesión:', err);
             setError('Credenciales incorrectas o error en el servidor');
