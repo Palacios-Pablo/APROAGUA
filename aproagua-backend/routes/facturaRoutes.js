@@ -1,10 +1,19 @@
+// src/routes/facturaRoutes.js
 const express = require('express');
-const { getFacturas, createFactura } = require('../controllers/facturaController');
-const authMiddleware = require('../middlewares/authMiddleware');  // Proteger las rutas con autenticación
+const { generarFacturasMensuales, obtenerFacturas, marcarFacturaComoPagada, descargarFacturaPDF } = require('../controllers/facturaController');
+const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router();
 
-// Rutas de facturación protegidas
-router.get('/', authMiddleware, getFacturas);               // Obtener todas las facturas
-router.post('/', authMiddleware, createFactura);            // Generar una nueva factura
+// Generar facturas mensuales
+router.post('/generar', authMiddleware, generarFacturasMensuales);
+
+// Obtener el historial de facturas
+router.get('/', authMiddleware, obtenerFacturas);
+
+// Marcar una factura como pagada
+router.put('/:id_factura/pagada', authMiddleware, marcarFacturaComoPagada);
+
+// Descargar una factura en PDF
+router.get('/:id_factura/pdf', authMiddleware, descargarFacturaPDF);
 
 module.exports = router;
