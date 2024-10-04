@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 const HistorialPagos = () => {
     const [pagos, setPagos] = useState([]);
@@ -58,9 +60,12 @@ const HistorialPagos = () => {
                             <td>{pago.Monto_Pagado} USD</td>
                             <td>Factura #{pago.ID_Factura}</td>
                             <td>
-                                <button className="btn btn-danger" onClick={() => handleRevertirPago(pago.ID_Pago)}>
-                                    Anular Pago
-                                </button>
+                                <button 
+                                                className="btn btn-danger"
+                                                onClick={() => handleRevertirPago(pago.ID_Pago)}
+                                            >
+                                                <FontAwesomeIcon icon={faTrashAlt} size="lg" /> {/* Icono de eliminar */}
+                               </button>
                             </td>
                         </tr>
                     ))}
