@@ -11,6 +11,11 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+
+// Importación de FontAwesomeIcon e ícono de PDF
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilePdf } from '@fortawesome/free-regular-svg-icons';
+
 import './DashboardGeneral.css';  // Estilos personalizados (opcional)
 
 // Registrar los elementos de Chart.js
@@ -146,8 +151,8 @@ const DashboardGeneral = () => {
                     </div>
 
                     {/* Tabla de clientes */}
+                    <h3>Resumen de Clientes</h3>
                     <div className="table-responsive">
-                        <h3>Resumen de Clientes</h3>
                         <table className="table table-striped">
                             <thead>
                                 <tr>
@@ -171,10 +176,10 @@ const DashboardGeneral = () => {
                                         <td>{cliente.Meses_Pendientes}</td>
                                         <td>
                                             <button
-                                                className="btn btn-primary"
+                                                className="btn-pdf"
                                                 onClick={() => handleGenerarPDF(cliente.ID_Cliente)}
                                             >
-                                                Generar PDF
+                                                <FontAwesomeIcon icon={faFilePdf} /> {/* El ícono de PDF */}
                                             </button>
                                         </td>
                                     </tr>
@@ -183,16 +188,19 @@ const DashboardGeneral = () => {
                         </table>
                     </div>
 
-                    {/* Gráfico de torta (clientes al día vs con pagos pendientes) */}
-                    <div className="mb-4">
-                        <h3>Estado de Clientes</h3>
-                        <Pie data={datosGraficoClientes} />
-                    </div>
 
-                    {/* Gráfico de barras (consumo de agua total) */}
-                    <div className="mb-4">
-                        <h3>Consumo Total de Agua</h3>
-                        <Bar data={datosGraficoConsumo} />
+                    <div className="charts-row">
+                        {/* Gráfico de torta (clientes al día vs con pagos pendientes) */}
+                        <div className="chart-container">
+                            <h3>Estado de Clientes</h3>
+                            <Pie data={datosGraficoClientes} />
+                        </div>
+
+                        {/* Gráfico de barras (consumo de agua total) */}
+                        <div className="chart-container">
+                            <h3>Consumo Total de Agua</h3>
+                            <Bar data={datosGraficoConsumo} />
+                        </div>
                     </div>
                 </div>
             </section>
