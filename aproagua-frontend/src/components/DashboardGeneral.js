@@ -33,6 +33,11 @@ const DashboardGeneral = () => {
     const [clientes, setClientes] = useState([]);
     const [kpis, setKpis] = useState({});
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
 
     useEffect(() => {
         // Obtener el resumen de clientes
@@ -73,6 +78,49 @@ const DashboardGeneral = () => {
             console.error('Error al generar el PDF:', err);
         }
     };
+
+    
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const sortedClientes = [...clientes].sort((a, b) => {
+        if (sortConfig.key) {
+            const aValue = a[sortConfig.key];
+            const bValue = b[sortConfig.key];
+            if (aValue < bValue) {
+                return sortConfig.direction === 'asc' ? -1 : 1;
+            }
+            if (aValue > bValue) {
+                return sortConfig.direction === 'asc' ? 1 : -1;
+            }
+        }
+        return 0;
+    });
+
+    const filteredClientes = sortedClientes.filter(cliente =>
+        cliente.Nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cliente.Apellido.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentClientes = filteredClientes.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(filteredClientes.length / itemsPerPage);
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
+
 
     if (loading) {
         return <div>Cargando...</div>;
@@ -150,23 +198,33 @@ const DashboardGeneral = () => {
                         </div>
                     </div>
 
-                    {/* Tabla de clientes */}
+                    {/* Buscador */}
+<                   div className="search-container">
+                        <input
+                            type="text"
+                            placeholder="Buscar cliente..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        />
+                    </div>
+
+                    {/* Tabla de clientes con paginación y ordenación */}
                     <h3>Resumen de Clientes</h3>
                     <div className="table-responsive">
                         <table className="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Litraje Consumido</th>
+                                    <th onClick={() => handleSort('Nombre')}>Nombre</th>
+                                    <th onClick={() => handleSort('Ultimo_Consumo')}>Litraje Consumido</th>
                                     <th>Número de Teléfono</th>
-                                    <th>Zona</th>
-                                    <th>Último Mes Pagado</th>
-                                    <th>Meses Pendientes</th>
+                                    <th onClick={() => handleSort('Zona')}>Zona</th>
+                                    <th onClick={() => handleSort('Ultimo_Mes_Pagado')}>Último Mes Pagado</th>
+                                    <th onClick={() => handleSort('Meses_Pendientes')}>Meses Pendientes</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {clientes.map((cliente, index) => (
+                                {currentClientes.map((cliente, index) => (
                                     <tr key={index}>
                                         <td>{cliente.Nombre} {cliente.Apellido}</td>
                                         <td>{cliente.Ultimo_Consumo} L</td>
@@ -179,7 +237,7 @@ const DashboardGeneral = () => {
                                                 className="btn-pdf"
                                                 onClick={() => handleGenerarPDF(cliente.ID_Cliente)}
                                             >
-                                                <FontAwesomeIcon icon={faFilePdf} /> {/* El ícono de PDF */}
+                                                <FontAwesomeIcon icon={faFilePdf} />
                                             </button>
                                         </td>
                                     </tr>
@@ -188,6 +246,18 @@ const DashboardGeneral = () => {
                         </table>
                     </div>
 
+                    {/* Paginación */}
+                    <div className="pagination">
+                        {[...Array(totalPages)].map((_, index) => (
+                            <button
+                                key={index}
+                                className={`page-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                onClick={() => handlePageChange(index + 1)}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                    </div>
 
                     <div className="charts-row">
                         {/* Gráfico de torta (clientes al día vs con pagos pendientes) */}
