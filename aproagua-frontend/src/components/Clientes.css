@@ -191,8 +191,8 @@ button.modal-btn-secondary:hover {
 /* TABLA CON SCROLL */
 
 .table-responsive {
-    max-height: 400px;  /* Ajusta el tamaño según sea necesario */
-    overflow-y: auto;   /* Permitir desplazamiento solo en el eje vertical */
+    max-height: auto;  /* Ajusta el tamaño según sea necesario */
+    overflow-y: none;   /* Permitir desplazamiento solo en el eje vertical */
 }
 
 .table {

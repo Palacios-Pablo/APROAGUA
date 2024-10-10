@@ -198,8 +198,13 @@ const DashboardGeneral = () => {
                         </div>
                     </div>
 
+
+
+                    {/* Tabla de clientes con paginación y ordenación */}
+                    <h3>Resumen de Clientes</h3>
+
                     {/* Buscador */}
-<                   div className="search-container">
+                    <                   div className="search-container">
                         <input
                             type="text"
                             placeholder="Buscar cliente..."
@@ -207,9 +212,7 @@ const DashboardGeneral = () => {
                             onChange={handleSearchChange}
                         />
                     </div>
-
-                    {/* Tabla de clientes con paginación y ordenación */}
-                    <h3>Resumen de Clientes</h3>
+                    
                     <div className="table-responsive">
                         <table className="table table-striped">
                             <thead>
