@@ -87,7 +87,7 @@
 
 
 /* Botón de acción en la tabla */
-.btn-pdf {
+.btn-pdf1 {
     background-color: #007bff; /* Color de botón azul */
     color: white;
     border: none;
@@ -101,13 +101,13 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.btn-pdf:hover {
+.btn-pdf1:hover {
     background-color: #0056b3; /* Color más oscuro al pasar el mouse */
     transform: translateY(-3px); /* Ligera elevación al hacer hover */
 }
 
-.btn-pdf .icon {
-    font-size: 16px; /* Ajuste del tamaño del ícono */
+.btn-pdf1 .icon {
+    font-size: 24px; /* Ajuste del tamaño del ícono */
     margin-right: 8px; /* Espacio entre el ícono y el texto */
 }
 

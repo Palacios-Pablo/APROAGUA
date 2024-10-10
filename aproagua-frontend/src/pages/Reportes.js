@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';  // Importar FontAwesomeIcon
+import { faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons';  // Íconos de Excel y PDF
+import './Reportes.css';  // Asegúrate de enlazar el archivo CSS
+
 
 const Reportes = () => {
     const [tipoReporte, setTipoReporte] = useState('');
@@ -105,15 +109,14 @@ const Reportes = () => {
                     <button className="btn btn-primary mb-3" onClick={handleGenerarReporte}>
                         Generar Reporte
                     </button>
-
                     {/* Opciones para descargar el reporte */}
                     {reporteDatos.length > 0 && (
                         <div>
-                            <button className="btn btn-success mr-2" onClick={handleDescargarExcel}>
-                                Descargar en Excel
+                            <button className="btn btn-excel" onClick={handleDescargarExcel}>
+                                <FontAwesomeIcon icon={faFileExcel} className="icon" /> Descargar en Excel
                             </button>
-                            <button className="btn btn-danger" onClick={handleDescargarPDF}>
-                                Descargar en PDF
+                            <button className="btn btn-pdf" onClick={handleDescargarPDF}>
+                                <FontAwesomeIcon icon={faFilePdf} className="icon" /> Descargar en PDF
                             </button>
                         </div>
                     )}

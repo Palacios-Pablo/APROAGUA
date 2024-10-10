@@ -1,0 +1,59 @@
+/* Estilos para los botones de descarga */
+
+/* Botón de Excel (verde) */
+.btn-excel {
+    background-color: #28a745;  /* Verde */
+    color: white;
+    border: none;
+    padding: 12px 24px;  /* Aumentar el tamaño del botón */
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;  /* Aumentar el tamaño del texto */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;  /* Margen superior para separarlo */
+    width: auto;
+}
+
+.btn-excel:hover {
+    background-color: #218838;  /* Verde más oscuro al pasar el mouse */
+    transform: translateY(-3px); /* Ligera elevación al hacer hover */
+}
+
+.btn-excel .icon {
+    margin-right: 10px;  /* Espacio entre el icono y el texto */
+}
+
+/* Botón de PDF (rojo) */
+.btn-pdf {
+    background-color: #dc3545;  /* Rojo */
+    color: white;
+    border: none;
+    padding: 12px 24px;  /* Aumentar el tamaño del botón */
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;  /* Aumentar el tamaño del texto */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;  /* Margen superior para separarlo */
+    width: auto;
+}
+
+
+.btn-pdf:hover {
+    background-color: #c82333;  /* Rojo más oscuro al pasar el mouse */
+    transform: translateY(-3px); /* Ligera elevación al hacer hover */
+}
+
+.btn-pdf .icon {
+    margin-right: 10px;  /* Espacio entre el icono y el texto */
+}
+
+/* Estilo general para los botones */
+.btn {
+    margin-right: 10px;  /* Espacio entre los botones */
+}

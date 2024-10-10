@@ -212,7 +212,7 @@ const DashboardGeneral = () => {
                             onChange={handleSearchChange}
                         />
                     </div>
-                    
+
                     <div className="table-responsive">
                         <table className="table table-striped">
                             <thead>
@@ -237,7 +237,7 @@ const DashboardGeneral = () => {
                                         <td>{cliente.Meses_Pendientes}</td>
                                         <td>
                                             <button
-                                                className="btn-pdf"
+                                                className="btn-pdf1"
                                                 onClick={() => handleGenerarPDF(cliente.ID_Cliente)}
                                             >
                                                 <FontAwesomeIcon icon={faFilePdf} />

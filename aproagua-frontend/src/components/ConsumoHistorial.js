@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {faTrashAlt} from '@fortawesome/free-solid-svg-icons';  // Icono de agua
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 const ConsumoHistorial = ({ idCliente, onConsumoActualizado }) => {
     const [consumos, setConsumos] = useState([]);
@@ -54,7 +57,7 @@ const ConsumoHistorial = ({ idCliente, onConsumoActualizado }) => {
                             <td>{consumo.Litraje_Consumido} Litros</td>
                             <td>
                                 <button className="btn btn-danger" onClick={() => handleEliminar(consumo.ID_Consumo)}>
-                                    Eliminar
+                                    <FontAwesomeIcon icon={faTrashAlt} size="lg" />
                                 </button>
                             </td>
                         </tr>

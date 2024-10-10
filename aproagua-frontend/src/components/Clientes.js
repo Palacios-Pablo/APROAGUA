@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faHistory, faTint } from '@fortawesome/free-solid-svg-icons';  // Icono de agua
+import { faEdit, faTrashAlt, faHistory, faTint, faReceipt} from '@fortawesome/free-solid-svg-icons';  // Icono de agua
 import ClienteModal from './ClienteModal';
-import AsignarTarifaModal from './AsignarTarifaModal';  
+import AsignarTarifaModal from './AsignarTarifaModal';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';  // Para redireccionar a la página de consumo
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 import './Clientes.css';
 
 const Clientes = () => {
     const [clientes, setClientes] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isTarifaModalOpen, setIsTarifaModalOpen] = useState(false);  
+    const [isTarifaModalOpen, setIsTarifaModalOpen] = useState(false);
     const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
     const [clienteParaTarifa, setClienteParaTarifa] = useState(null);
     const [historialTarifas, setHistorialTarifas] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);  
+    const [itemsPerPage] = useState(5);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [visibleHistorial, setVisibleHistorial] = useState(null);
 
@@ -135,7 +137,7 @@ const Clientes = () => {
                 <div className="container-fluid">
                     <h1>Gestión de Clientes</h1>
                     <button className="btn btn-primary mb-3" onClick={handleAgregarCliente}>Agregar Cliente</button>
-                    
+
                     {/* Buscador */}
                     <div className="search-container">
                         <input
@@ -145,7 +147,7 @@ const Clientes = () => {
                             onChange={handleSearchChange}
                         />
                     </div>
-                    
+
                     {/* Tabla */}
                     <div className="table-responsive">
                         <table className="table table-striped">
@@ -168,20 +170,20 @@ const Clientes = () => {
                                         <td>{cliente.Direccion}</td>
                                         <td>{cliente.ID_Zona}</td>
                                         <td>
-                                            <button className="btn btn-warning" onClick={() => handleEditarCliente(cliente)}>
+                                            <button className="btn btn-warning" onClick={() => handleEditarCliente(cliente)} data-tooltip-id="tooltip" data-tooltip-content="Editar Cliente">
                                                 <FontAwesomeIcon icon={faEdit} size="lg" />
                                             </button>
-                                            <button className="btn btn-danger" onClick={() => handleEliminarCliente(cliente.ID_Cliente)}>
+                                            <button className="btn btn-danger" onClick={() => handleEliminarCliente(cliente.ID_Cliente)} data-tooltip-id="tooltip" data-tooltip-content="Eliminar Cliente">
                                                 <FontAwesomeIcon icon={faTrashAlt} size="lg" />
                                             </button>
-                                            <button className="btn btn-history" onClick={() => handleVerHistorialTarifas(cliente.ID_Cliente)}>
+                                            <button className="btn btn-history" onClick={() => handleVerHistorialTarifas(cliente.ID_Cliente)} data-tooltip-id="tooltip" data-tooltip-content="Ver Historial de Tarifas">
                                                 <FontAwesomeIcon icon={faHistory} size="lg" />
                                             </button>
-                                            <button className="btn btn-info" onClick={() => handleAsignarTarifa(cliente)}>
-                                                Asignar Tarifa
+                                            <button className="btn btn-info" onClick={() => handleAsignarTarifa(cliente)}  data-tooltip-id="tooltip" data-tooltip-content="Asignar Tarifa">
+                                                <FontAwesomeIcon icon={faReceipt} size="lg" /> 
                                             </button>
                                             {/* Botón para registrar consumo */}
-                                            <button className="btn btn-primary" onClick={() => handleRegistrarConsumo(cliente)}>
+                                            <button className="btn btn-consumo" onClick={() => handleRegistrarConsumo(cliente)} data-tooltip-id="tooltip" data-tooltip-content="Registrar Consumo">
                                                 <FontAwesomeIcon icon={faTint} size="lg" /> {/* Ícono de agua */}
                                             </button>
                                         </td>
@@ -237,6 +239,8 @@ const Clientes = () => {
                     <AsignarTarifaModal isOpen={isTarifaModalOpen} onClose={() => setIsTarifaModalOpen(false)} cliente={clienteParaTarifa} />
                 </div>
             </section>
+            {/* Renderizando el tooltip afuera de los botones */}
+            <Tooltip id="tooltip" />
         </div>
     );
 };
