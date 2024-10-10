@@ -20,6 +20,7 @@ import Facturacion from './pages/Facturacion';
 import Pagos from './pages/Pagos';
 import Reportes from './pages/Reportes';
 import Finanzas from './pages/Finanzas';
+import EgresosPage from './pages/EgresosPage';
 
 Modal.setAppElement('#root');  // Establece el elemento raíz de la aplicación
 
@@ -35,7 +36,8 @@ function AppLayout({ children }) {
                        location.pathname.startsWith('/pagos') || 
                        location.pathname.startsWith('/reportes') || 
                        location.pathname.startsWith('/finanzas') ||
-                       location.pathname.startsWith('/tarifas');
+                       location.pathname.startsWith('/tarifas') ||
+                       location.pathname.startsWith('/egresos');
 
     return (
         <>
@@ -65,6 +67,7 @@ function App() {
                     <Route path="/reportes" element={<DashboardLayout><Reportes /></DashboardLayout>} />
                     <Route path="/finanzas" element={<DashboardLayout><Finanzas /></DashboardLayout>} />
                     <Route path="/tarifas" element={<DashboardLayout><Tarifas /></DashboardLayout>} />
+                    <Route path="/egresos" element={<DashboardLayout><EgresosPage /></DashboardLayout>} />
                 </Routes>
             </AppLayout>
         </Router>
