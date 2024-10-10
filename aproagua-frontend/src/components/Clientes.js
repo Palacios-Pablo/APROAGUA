@@ -1,25 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faHistory, faTint } from '@fortawesome/free-solid-svg-icons';  // Icono de agua
 import ClienteModal from './ClienteModal';
-import AsignarTarifaModal from './AsignarTarifaModal';  // Nuevo modal para asignar tarifas
-import axios from 'axios';  // Para hacer peticiones al backend
+import AsignarTarifaModal from './AsignarTarifaModal';  
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';  // Para redireccionar a la página de consumo
 import './Clientes.css';
 
 const Clientes = () => {
     const [clientes, setClientes] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isTarifaModalOpen, setIsTarifaModalOpen] = useState(false);  // Nuevo estado para el modal de tarifas
+    const [isTarifaModalOpen, setIsTarifaModalOpen] = useState(false);  
     const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
-    const [clienteParaTarifa, setClienteParaTarifa] = useState(null);  // Cliente al que se asignará la tarifa
-    const [historialTarifas, setHistorialTarifas] = useState([]);  // Historial de tarifas
+    const [clienteParaTarifa, setClienteParaTarifa] = useState(null);
+    const [historialTarifas, setHistorialTarifas] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5);  
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [visibleHistorial, setVisibleHistorial] = useState(null);
 
-    // Obtener todos los clientes al cargar el componente
+    const navigate = useNavigate();  // Hook para redireccionar
+
     useEffect(() => {
         const obtenerClientes = async () => {
             try {
                 const res = await axios.get('http://localhost:3000/api/clientes', {
-                    headers: { 'x-auth-token': localStorage.getItem('token') }  // Asegúrate de enviar el token JWT
+                    headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setClientes(res.data);
             } catch (err) {
@@ -30,7 +37,7 @@ const Clientes = () => {
     }, []);
 
     const handleAgregarCliente = () => {
-        setClienteSeleccionado(null);  // No hay cliente seleccionado, es un nuevo cliente
+        setClienteSeleccionado(null);
         setIsModalOpen(true);
     };
 
@@ -47,27 +54,79 @@ const Clientes = () => {
                 });
                 setClientes(clientes.filter(cliente => cliente.ID_Cliente !== id_cliente));
             } catch (err) {
-                console.error('Error al eliminar cliente', err.response || err);  // Imprimir más detalles del error
+                console.error('Error al eliminar cliente', err.response || err);
             }
         }
     };
-    
 
     const handleAsignarTarifa = (cliente) => {
         setClienteParaTarifa(cliente);
-        setIsTarifaModalOpen(true);  // Abrir el modal de asignar tarifa
+        setIsTarifaModalOpen(true);
     };
 
-    // Función para obtener el historial de tarifas de un cliente
+    // Función para mostrar u ocultar historial
     const handleVerHistorialTarifas = async (id_cliente) => {
+        if (visibleHistorial === id_cliente) {
+            setVisibleHistorial(null);
+            setHistorialTarifas([]);
+            return;
+        }
+
         try {
             const res = await axios.get(`http://localhost:3000/api/clientes/${id_cliente}/historial-tarifas`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             setHistorialTarifas(res.data);
+            setVisibleHistorial(id_cliente);
         } catch (err) {
             console.error('Error al obtener el historial de tarifas', err);
         }
+    };
+
+    // Función para redirigir a la página de consumo con el cliente seleccionado
+    const handleRegistrarConsumo = (cliente) => {
+        navigate('/consumo', { state: { cliente } });  // Redirigir y pasar los datos del cliente
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const sortedClientes = [...clientes].sort((a, b) => {
+        if (sortConfig.key) {
+            const aValue = a[sortConfig.key];
+            const bValue = b[sortConfig.key];
+            if (aValue < bValue) {
+                return sortConfig.direction === 'asc' ? -1 : 1;
+            }
+            if (aValue > bValue) {
+                return sortConfig.direction === 'asc' ? 1 : -1;
+            }
+        }
+        return 0;
+    });
+
+    const filteredClientes = sortedClientes.filter(cliente =>
+        cliente.Nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cliente.Apellido.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentClientes = filteredClientes.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(filteredClientes.length / itemsPerPage);
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
     };
 
     return (
@@ -76,20 +135,32 @@ const Clientes = () => {
                 <div className="container-fluid">
                     <h1>Gestión de Clientes</h1>
                     <button className="btn btn-primary mb-3" onClick={handleAgregarCliente}>Agregar Cliente</button>
+                    
+                    {/* Buscador */}
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            placeholder="Buscar cliente..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        />
+                    </div>
+                    
+                    {/* Tabla */}
                     <div className="table-responsive">
                         <table className="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
+                                    <th onClick={() => handleSort('Nombre')}>Nombre</th>
+                                    <th onClick={() => handleSort('Apellido')}>Apellido</th>
                                     <th>Teléfono</th>
                                     <th>Dirección</th>
-                                    <th>Zona</th>
+                                    <th onClick={() => handleSort('ID_Zona')}>Zona</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {clientes.map(cliente => (
+                                {currentClientes.map(cliente => (
                                     <tr key={cliente.ID_Cliente}>
                                         <td>{cliente.Nombre}</td>
                                         <td>{cliente.Apellido}</td>
@@ -97,30 +168,21 @@ const Clientes = () => {
                                         <td>{cliente.Direccion}</td>
                                         <td>{cliente.ID_Zona}</td>
                                         <td>
-                                            <button
-                                                className="btn btn-warning"
-                                                onClick={() => handleEditarCliente(cliente)}
-                                            >
-                                                <FontAwesomeIcon icon={faEdit} size="lg" /> {/* Icono de edición */}
+                                            <button className="btn btn-warning" onClick={() => handleEditarCliente(cliente)}>
+                                                <FontAwesomeIcon icon={faEdit} size="lg" />
                                             </button>
-                                            <button 
-                                                className="btn btn-danger"
-                                                onClick={() => handleEliminarCliente(cliente.ID_Cliente)}
-                                            >
-                                                <FontAwesomeIcon icon={faTrashAlt} size="lg" /> {/* Icono de eliminar */}
+                                            <button className="btn btn-danger" onClick={() => handleEliminarCliente(cliente.ID_Cliente)}>
+                                                <FontAwesomeIcon icon={faTrashAlt} size="lg" />
                                             </button>
-
-                                            <button
-                                                className="btn btn-history"
-                                                onClick={() => handleVerHistorialTarifas(cliente.ID_Cliente)}
-                                            >
-                                                <FontAwesomeIcon icon={faHistory} size="lg" /> {/* Icono de historial */}
+                                            <button className="btn btn-history" onClick={() => handleVerHistorialTarifas(cliente.ID_Cliente)}>
+                                                <FontAwesomeIcon icon={faHistory} size="lg" />
                                             </button>
-                                            <button
-                                                className="btn btn-info"
-                                                onClick={() => handleAsignarTarifa(cliente)}
-                                            >
+                                            <button className="btn btn-info" onClick={() => handleAsignarTarifa(cliente)}>
                                                 Asignar Tarifa
+                                            </button>
+                                            {/* Botón para registrar consumo */}
+                                            <button className="btn btn-primary" onClick={() => handleRegistrarConsumo(cliente)}>
+                                                <FontAwesomeIcon icon={faTint} size="lg" /> {/* Ícono de agua */}
                                             </button>
                                         </td>
                                     </tr>
@@ -128,38 +190,51 @@ const Clientes = () => {
                             </tbody>
                         </table>
                     </div>
-                    
-                    {/* Mostrar el historial de tarifas si se selecciona un cliente */}
-                    {historialTarifas.length > 0 && (
+
+                    {/* Historial de Tarifas */}
+                    {visibleHistorial && (
                         <div className="historial-tarifas">
                             <h2>Historial de Tarifas</h2>
                             <div className="table-responsive">
-                            <table className="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>ID Tarifa</th>
-                                        <th>Descripción</th>
-                                        <th>Fecha Inicio</th>
-                                        <th>Fecha Fin</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {historialTarifas.map((tarifa) => (
-                                        <tr key={tarifa.ID_Tarifa}>
-                                            <td>{tarifa.ID_Tarifa}</td>
-                                            <td>{tarifa.Descripcion}</td>
-                                            <td>{tarifa.Fecha_Inicio}</td>
-                                            <td>{tarifa.Fecha_Fin || 'Vigente'}</td>
+                                <table className="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>ID Tarifa</th>
+                                            <th>Descripción</th>
+                                            <th>Fecha Inicio</th>
+                                            <th>Fecha Fin</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {historialTarifas.map((tarifa) => (
+                                            <tr key={tarifa.ID_Tarifa}>
+                                                <td>{tarifa.ID_Tarifa}</td>
+                                                <td>{tarifa.Descripcion}</td>
+                                                <td>{tarifa.Fecha_Inicio}</td>
+                                                <td>{tarifa.Fecha_Fin || 'Vigente'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     )}
 
+                    {/* Paginación */}
+                    <div className="pagination">
+                        {[...Array(totalPages)].map((_, index) => (
+                            <button
+                                key={index}
+                                className={`page-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                onClick={() => handlePageChange(index + 1)}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                    </div>
+
                     <ClienteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} cliente={clienteSeleccionado} />
-                    <AsignarTarifaModal isOpen={isTarifaModalOpen} onClose={() => setIsTarifaModalOpen(false)} cliente={clienteParaTarifa} />  {/* Modal para asignar tarifa */}
+                    <AsignarTarifaModal isOpen={isTarifaModalOpen} onClose={() => setIsTarifaModalOpen(false)} cliente={clienteParaTarifa} />
                 </div>
             </section>
         </div>

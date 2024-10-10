@@ -1,0 +1,23 @@
+/* Botón de cierre (X) en la esquina superior derecha */
+.close-button {
+    position: absolute;       /* Posiciona el botón relativo a su contenedor */
+    top: 20px;                /* Margen superior */
+    right: 20px;              /* Margen derecho */
+    background-color: #ff4d4f; /* Rojo suave */
+    color: white;             /* Color del texto */
+    border: none;             /* Sin borde */
+    border-radius: 50%;       /* Redondeamos el botón */
+    width: 40px;              /* Ancho del botón */
+    height: 40px;             /* Altura del botón */
+    font-size: 18px;          /* Tamaño del texto */
+    font-weight: bold;        /* Texto en negrita */
+    cursor: pointer;          /* Cambiar cursor al pasar el mouse */
+    display: flex;            /* Usar flexbox para centrar el contenido */
+    justify-content: center;  /* Centrar horizontalmente */
+    align-items: center;      /* Centrar verticalmente */
+    transition: background-color 0.3s ease; /* Animación suave */
+}
+
+.close-button:hover {
+    background-color: #d9363e;  /* Color más oscuro al pasar el mouse */
+}

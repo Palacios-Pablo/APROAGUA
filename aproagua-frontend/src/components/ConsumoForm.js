@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado }) => {
+const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado, clienteSeleccionado }) => {
     const [clientes, setClientes] = useState([]);
-    const [idCliente, setIdCliente] = useState('');
+    const [idCliente, setIdCliente] = useState(clienteSeleccionado?.ID_Cliente || '');  // Preseleccionar cliente
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaFin, setFechaFin] = useState('');
     const [litrajeConsumido, setLitrajeConsumido] = useState('');
 
-    // Obtener la lista de clientes para seleccionar
     useEffect(() => {
         const obtenerClientes = async () => {
             try {
@@ -23,10 +22,16 @@ const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado }) => {
         obtenerClientes();
     }, []);
 
-    // Notificar cuando se selecciona un cliente
+    // Actualizar cliente si se pasa como prop
+    useEffect(() => {
+        if (clienteSeleccionado) {
+            setIdCliente(clienteSeleccionado.ID_Cliente);
+        }
+    }, [clienteSeleccionado]);
+
     const handleClienteChange = (e) => {
         setIdCliente(e.target.value);
-        onClienteSeleccionado(e.target.value);  // Notificar al padre
+        onClienteSeleccionado(e.target.value);
     };
 
     const handleSubmit = async (e) => {
@@ -42,12 +47,10 @@ const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado }) => {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
 
-            // Limpiar el formulario después de registrar el consumo
             setFechaInicio('');
             setFechaFin('');
             setLitrajeConsumido('');
 
-            // Notificar al padre que el consumo fue registrado
             if (onConsumoRegistrado) onConsumoRegistrado();
 
         } catch (err) {
@@ -62,7 +65,7 @@ const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado }) => {
                 <select
                     className="form-control"
                     value={idCliente}
-                    onChange={handleClienteChange}  // Capturamos el cambio de cliente
+                    onChange={handleClienteChange}
                     required
                 >
                     <option value="">Seleccionar cliente</option>
