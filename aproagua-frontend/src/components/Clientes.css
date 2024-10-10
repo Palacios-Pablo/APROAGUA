@@ -68,7 +68,9 @@ table.table tr:nth-child(even) {
 /* Estilos para los botones de acción (Editar, Eliminar) alineados horizontalmente */
 button.btn-warning,
 button.btn-danger,
-button.btn-history{
+button.btn-history,
+button.btn-consumo,
+button.btn-info{
     padding: 5px 8px;  /* Reducimos el padding para hacerlos más pequeños */
     font-size: 1rem;   /* Reducimos el tamaño del ícono */
     border-radius: 5px;

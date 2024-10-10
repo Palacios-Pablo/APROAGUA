@@ -1,8 +1,8 @@
 /* Botón de cierre (X) en la esquina superior derecha */
 .close-button {
     position: absolute;       /* Posiciona el botón relativo a su contenedor */
-    top: 20px;                /* Margen superior */
-    right: 20px;              /* Margen derecho */
+    top: 30px;                /* Margen superior */
+    right: 30px;              /* Margen derecho */
     background-color: #ff4d4f; /* Rojo suave */
     color: white;             /* Color del texto */
     border: none;             /* Sin borde */
