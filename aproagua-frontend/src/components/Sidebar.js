@@ -24,11 +24,6 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/consumo">
-                            <i className="fas fa-water"></i> Registro de Consumo
-                        </Link>
-                    </li>
-                    <li>
                         <Link to="/facturacion">
                             <i className="fas fa-file-invoice"></i> Facturación
                         </Link>
@@ -36,6 +31,11 @@ const Sidebar = () => {
                     <li>
                         <Link to="/pagos">
                             <i className="fas fa-credit-card"></i> Pagos
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/egresos">
+                            <i className="fas fa-money-bill-wave"></i> Egresos
                         </Link>
                     </li>
                     <li>
@@ -48,6 +48,7 @@ const Sidebar = () => {
                             <i className="fas fa-balance-scale"></i> Dashboard Financiero
                         </Link>
                     </li>
+
                 </ul>
             </nav>
             <button className="logout-button" onClick={handleLogout}>

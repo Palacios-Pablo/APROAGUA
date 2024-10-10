@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');  // Ya has importado cors
+const egresoRoutes = require('./routes/egresoRoutes'); 
 const tarifaRoutes = require('./routes/tarifaRoutes'); 
 const clienteRoutes = require('./routes/clienteRoutes');
 const consumoRoutes = require('./routes/consumoRoutes');
@@ -23,6 +24,7 @@ app.use(cors({ origin: 'http://localhost:3001' }));
 app.use(express.json());
 
 // Definir rutas
+app.use('/api/egresos', egresoRoutes); 
 app.use('/api/clientes', clienteRoutes);
 app.use('/api/consumos', consumoRoutes);
 app.use('/api/facturas', facturaRoutes);
