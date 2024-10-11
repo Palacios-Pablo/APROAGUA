@@ -57,7 +57,7 @@ const HistorialPagos = () => {
                             <td>{pago.ID_Pago}</td>
                             <td>{pago.Nombre} {pago.Apellido}</td>
                             <td>{pago.Fecha_Pago}</td>
-                            <td>{pago.Monto_Pagado} USD</td>
+                            <td>Q. {pago.Monto_Pagado} </td>
                             <td>Factura #{pago.ID_Factura}</td>
                             <td>
                                 <button 

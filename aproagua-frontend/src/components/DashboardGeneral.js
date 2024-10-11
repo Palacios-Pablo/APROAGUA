@@ -182,7 +182,7 @@ const DashboardGeneral = () => {
                         <div className="col-lg-3 col-6">
                             <div className="small-box bg-success">
                                 <div className="inner">
-                                    <h3>{kpis.ingresosMes} USD</h3>
+                                    <h3>Q. {kpis.ingresosMes} </h3>
                                     <p>Ingresos del Mes</p>
                                 </div>
                             </div>

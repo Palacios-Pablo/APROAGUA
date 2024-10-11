@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import EgresoModal from './EgresoModal'; // Modal para agregar/editar egresos
 import axios from 'axios';  // Para hacer peticiones al backend
 import './Egresos.css'; // Estilos personalizados
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrashAlt} from '@fortawesome/free-solid-svg-icons';  // Icono de agua
 
 const Egresos = () => {
     const [egresos, setEgresos] = useState([]); // Lista de egresos
@@ -126,19 +128,19 @@ const Egresos = () => {
                                         <td>{egreso.ID_Egreso}</td>
                                         <td>{egreso.Fecha}</td>
                                         <td>{egreso.Descripcion}</td>
-                                        <td>{egreso.Monto} USD</td>
+                                        <td>Q. {egreso.Monto} </td>
                                         <td>
                                             <button
                                                 className="btn btn-warning"
                                                 onClick={() => handleEditarEgreso(egreso)}
                                             >
-                                                Editar
+                                                <FontAwesomeIcon icon={faEdit} size="lg" />
                                             </button>
                                             <button
                                                 className="btn btn-danger"
                                                 onClick={() => handleEliminarEgreso(egreso.ID_Egreso)}
                                             >
-                                                Eliminar
+                                                <FontAwesomeIcon icon={faTrashAlt} size="lg" />
                                             </button>
                                         </td>
                                     </tr>

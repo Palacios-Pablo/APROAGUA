@@ -75,7 +75,7 @@ const HistorialFacturas = () => {
                             <td>{factura.ID_Factura}</td>
                             <td>{factura.Nombre} {factura.Apellido}</td>
                             <td>{factura.Fecha_Emision}</td>
-                            <td>{factura.Monto} USD</td>
+                            <td>Q. {factura.Monto}</td>
                             <td>{factura.Estado}</td>
                             <td>
                                 {factura.Estado === 'pendiente' && (
