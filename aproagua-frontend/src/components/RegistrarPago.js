@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';  // Para recibir el estado
 
 const RegistrarPago = ({ onPagoRegistrado }) => {
     const [facturasPendientes, setFacturasPendientes] = useState([]);
     const [idFactura, setIdFactura] = useState('');
     const [fechaPago, setFechaPago] = useState('');
     const [montoPagado, setMontoPagado] = useState('');
+    const location = useLocation();  // Hook para acceder al state
+
+    // Obtener el ID de la factura de la navegación, si existe
+    useEffect(() => {
+        if (location.state && location.state.idFactura) {
+            setIdFactura(location.state.idFactura);
+        }
+    }, [location.state]);
 
     // Obtener facturas pendientes al cargar el componente
     useEffect(() => {
         const obtenerFacturasPendientes = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/facturas', {
+                const res = await axios.get('http://localhost:3000/api/facturas/pendientes', {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
-                // Filtrar solo facturas pendientes
-                const pendientes = res.data.filter(factura => factura.Estado === 'pendiente');
-                setFacturasPendientes(pendientes);
+                setFacturasPendientes(res.data);
             } catch (err) {
                 console.error('Error al obtener facturas pendientes', err);
             }

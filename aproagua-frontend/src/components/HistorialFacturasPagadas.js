@@ -1,42 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilePdf } from '@fortawesome/free-regular-svg-icons';
 
-const HistorialFacturas = () => {
+const HistorialFacturasPagadas = () => {
     const [facturas, setFacturas] = useState([]);
+    const [busqueda, setBusqueda] = useState(''); // Estado para el filtro de búsqueda
 
-    // Obtener todas las facturas al cargar el componente
+    // Obtener todas las facturas pagadas al cargar el componente
     useEffect(() => {
-        const obtenerFacturas = async () => {
+        const obtenerFacturasPagadas = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/facturas', {
+                const res = await axios.get('http://localhost:3000/api/facturas/pagadas', {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setFacturas(res.data);
             } catch (err) {
-                console.error('Error al obtener facturas', err);
+                console.error('Error al obtener facturas pagadas', err);
             }
         };
-        obtenerFacturas();
+        obtenerFacturasPagadas();
     }, []);
 
-    // Marcar una factura como pagada
-    const handleMarcarComoPagada = async (idFactura) => {
-        if (window.confirm('¿Estás seguro de marcar esta factura como pagada?')) {
-            try {
-                await axios.put(`http://localhost:3000/api/facturas/${idFactura}/pagada`, {}, {
-                    headers: { 'x-auth-token': localStorage.getItem('token') }
-                });
-                setFacturas(facturas.map(factura => 
-                    factura.ID_Factura === idFactura ? { ...factura, Estado: 'pagado' } : factura
-                ));
-                alert('Factura marcada como pagada');
-            } catch (err) {
-                console.error('Error al marcar factura como pagada', err);
-            }
-        }
-    };
-
-    // Descargar factura en PDF
+    // Función para descargar la factura en PDF
     const handleDescargarPDF = async (idFactura) => {
         try {
             const res = await axios.get(`http://localhost:3000/api/facturas/${idFactura}/pdf`, {
@@ -55,9 +41,25 @@ const HistorialFacturas = () => {
         }
     };
 
+    // Filtrar las facturas por el nombre del cliente
+    const facturasFiltradas = facturas.filter(factura => 
+        factura.Nombre.toLowerCase().includes(busqueda.toLowerCase()) || 
+        factura.Apellido.toLowerCase().includes(busqueda.toLowerCase())
+    );
+
     return (
         <div className="table-responsive">
-            <h3>Historial de Facturas</h3>
+            <h3>Facturas Pagadas</h3>
+
+            {/* Buscador */}
+            <input
+                type="text"
+                placeholder="Buscar por cliente..."
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                className="form-control mb-3"
+            />
+
             <table className="table table-striped">
                 <thead>
                     <tr>
@@ -65,26 +67,19 @@ const HistorialFacturas = () => {
                         <th>Cliente</th>
                         <th>Fecha de Emisión</th>
                         <th>Monto</th>
-                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {facturas.map(factura => (
+                    {facturasFiltradas.map(factura => (
                         <tr key={factura.ID_Factura}>
                             <td>{factura.ID_Factura}</td>
                             <td>{factura.Nombre} {factura.Apellido}</td>
                             <td>{factura.Fecha_Emision}</td>
                             <td>Q. {factura.Monto}</td>
-                            <td>{factura.Estado}</td>
                             <td>
-                                {factura.Estado === 'pendiente' && (
-                                    <button className="btn btn-success" onClick={() => handleMarcarComoPagada(factura.ID_Factura)}>
-                                        Marcar como Pagada
-                                    </button>
-                                )}
-                                <button className="btn btn-info ml-2" onClick={() => handleDescargarPDF(factura.ID_Factura)}>
-                                    Descargar PDF
+                                <button className="btn btn-pdf1" onClick={() => handleDescargarPDF(factura.ID_Factura)}>
+                                <FontAwesomeIcon icon={faFilePdf} />
                                 </button>
                             </td>
                         </tr>
@@ -95,4 +90,4 @@ const HistorialFacturas = () => {
     );
 };
 
-export default HistorialFacturas;
+export default HistorialFacturasPagadas;

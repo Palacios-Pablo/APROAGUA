@@ -1,4 +1,3 @@
-// src/controllers/pagoController.js
 const pool = require('../config/dbconfig');
 
 // Registrar un nuevo pago
@@ -24,37 +23,19 @@ exports.registrarPago = async (req, res) => {
         // Insertar el pago en la tabla Pago
         await pool.execute(
             'INSERT INTO Pago (ID_Factura, ID_Balance, Fecha_Pago, Monto_Pagado) VALUES (?, ?, ?, ?)',
-            [id_factura, null, fecha_pago, monto_pagado]  // Por ahora dejamos ID_Balance como null
+            [id_factura, 1, fecha_pago, monto_pagado]  // ID_Balance es fijo, siempre apunta al balance general (ID=1)
         );
 
-        // Calcular el balance financiero
-        const [balance] = await pool.execute('SELECT * FROM Balance ORDER BY Fecha DESC LIMIT 1');  // Último balance
+        // Actualizar el balance general (ID_Balance = 1)
+        const [balance] = await pool.execute('SELECT * FROM Balance WHERE ID_Balance = 1');
         let nuevoSaldo = balance.length > 0 ? balance[0].Saldo + monto_pagado : monto_pagado;
 
-        // Insertar el nuevo balance o actualizar el existente
-        const fechaHoy = new Date().toISOString().split('T')[0];  // Fecha en formato 'YYYY-MM-DD'
-        let idBalance;
+        await pool.execute(
+            'UPDATE Balance SET Total_Ingresos = Total_Ingresos + ?, Saldo = ? WHERE ID_Balance = 1',
+            [monto_pagado, nuevoSaldo]
+        );
 
-        if (balance.length === 0 || balance[0].Fecha !== fechaHoy) {
-            // Crear un nuevo balance si no existe uno para la fecha actual
-            const [resultadoBalance] = await pool.execute(
-                'INSERT INTO Balance (Fecha, Total_Ingresos, Total_Egresos, Saldo) VALUES (?, ?, 0, ?)',
-                [fechaHoy, monto_pagado, nuevoSaldo]
-            );
-            idBalance = resultadoBalance.insertId;  // Obtener el ID del balance insertado
-        } else {
-            // Actualizar el balance existente
-            await pool.execute(
-                'UPDATE Balance SET Total_Ingresos = Total_Ingresos + ?, Saldo = ? WHERE ID_Balance = ?',
-                [monto_pagado, nuevoSaldo, balance[0].ID_Balance]
-            );
-            idBalance = balance[0].ID_Balance;  // El ID del balance actualizado
-        }
-
-        // Actualizar el ID_Balance en el registro de Pago
-        await pool.execute('UPDATE Pago SET ID_Balance = ? WHERE ID_Factura = ?', [idBalance, id_factura]);
-
-        // Verificar si el monto pagado cubre el total de la factura y marcar como pagada
+        // Verificar si el monto pagado cubre el total de la factura y marcarla como pagada
         const [pagosAcumulados] = await pool.execute(
             'SELECT SUM(Monto_Pagado) AS TotalPagado FROM Pago WHERE ID_Factura = ?',
             [id_factura]
@@ -107,9 +88,11 @@ exports.revertirPago = async (req, res) => {
         // Eliminar el pago
         await pool.execute('DELETE FROM Pago WHERE ID_Pago = ?', [id_pago]);
 
-        // Actualizar el balance
-        await pool.execute('UPDATE Balance SET Total_Ingresos = Total_Ingresos - ?, Saldo = Saldo - ? WHERE ID_Balance = ?', 
-        [montoPagado, montoPagado, idBalance]);
+        // Actualizar el balance general (ID_Balance = 1)
+        await pool.execute(
+            'UPDATE Balance SET Total_Ingresos = Total_Ingresos - ?, Saldo = Saldo - ? WHERE ID_Balance = 1', 
+            [montoPagado, montoPagado]
+        );
 
         // Verificar si la factura debe volver a estado pendiente
         const [factura] = await pool.execute(`
