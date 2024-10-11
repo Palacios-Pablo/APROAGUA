@@ -1,34 +1,25 @@
 // src/controllers/finanzasController.js
 const pool = require('../config/dbconfig');
 
-// Obtener los balances financieros en un rango de fechas
-exports.obtenerBalances = async (req, res) => {
-    const { fechaInicio, fechaFin } = req.query;
-
+// Obtener el balance general sin fechas (ya que solo será un balance)
+exports.obtenerBalanceGeneral = async (req, res) => {
     try {
+        // No necesitamos filtrar por fecha, ya que solo habrá un balance general
         const [result] = await pool.execute(
-            `SELECT Fecha, Total_Ingresos, Total_Egresos, Saldo
-            FROM Balance
-            WHERE Fecha BETWEEN ? AND ?`,
-            [fechaInicio, fechaFin]
+            `SELECT Total_Ingresos, Total_Egresos, (Total_Ingresos - Total_Egresos) AS Saldo FROM Balance WHERE ID_Balance = 1`
         );
-        res.status(200).json(result);
+        res.status(200).json(result[0] || { Total_Ingresos: 0, Total_Egresos: 0, Saldo: 0 });
     } catch (err) {
-        console.error('Error al obtener balances:', err);
+        console.error('Error al obtener el balance general:', err);
         res.status(500).json({ msg: 'Error del servidor' });
     }
 };
 
-// Obtener los detalles de los egresos
+// Obtener los detalles de los egresos (mantener la lógica existente)
 exports.obtenerEgresos = async (req, res) => {
-    const { fechaInicio, fechaFin } = req.query;
-
     try {
         const [result] = await pool.execute(
-            `SELECT Fecha, Descripcion, Monto
-            FROM Egreso
-            WHERE Fecha BETWEEN ? AND ?`,
-            [fechaInicio, fechaFin]
+            `SELECT Fecha, Descripcion, Monto FROM Egreso`
         );
         res.status(200).json(result);
     } catch (err) {
@@ -37,29 +28,24 @@ exports.obtenerEgresos = async (req, res) => {
     }
 };
 
-// Obtener los ingresos totales
+// Obtener los ingresos totales (mantener la lógica existente)
 exports.obtenerIngresosTotales = async (req, res) => {
-    const { fechaInicio, fechaFin } = req.query;
-
     try {
         const [result] = await pool.execute(
-            `SELECT SUM(Monto_Pagado) as Total_Ingresos
-            FROM Pago
-            WHERE Fecha_Pago BETWEEN ? AND ?`,
-            [fechaInicio, fechaFin]
+            `SELECT SUM(Monto_Pagado) AS Total_Ingresos FROM Pago`
         );
-        res.status(200).json(result);
+        res.status(200).json(result[0] || { Total_Ingresos: 0 });
     } catch (err) {
         console.error('Error al obtener ingresos:', err);
         res.status(500).json({ msg: 'Error del servidor' });
     }
 };
 
-// Obtener el saldo final
+// Obtener el saldo final (mantener la lógica existente)
 exports.obtenerSaldoFinal = async (req, res) => {
     try {
         const [result] = await pool.execute(
-            `SELECT Saldo FROM Balance ORDER BY Fecha DESC LIMIT 1`
+            `SELECT (Total_Ingresos - Total_Egresos) AS Saldo FROM Balance WHERE ID_Balance = 1`
         );
         res.status(200).json(result[0] || { Saldo: 0 });
     } catch (err) {

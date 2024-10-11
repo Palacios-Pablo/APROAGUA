@@ -84,7 +84,7 @@ const EgresoModal = ({ isOpen, onClose, egresoSeleccionado, actualizarEgresos })
                         />
                     </div>
                     <div className="form-group">
-                        <label>Monto (USD)</label>
+                        <label>Monto (Quetzales)</label>
                         <input
                             type="number"
                             className="form-control"

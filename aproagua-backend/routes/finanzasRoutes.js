@@ -1,25 +1,23 @@
-// src/routes/finanzasRoutes.js
+// Definir las rutas en tu archivo de rutas, ejemplo: src/routes/finanzasRoutes.js
 const express = require('express');
-const {
-    obtenerBalances,
-    obtenerEgresos,
-    obtenerIngresosTotales,
-    obtenerSaldoFinal
-} = require('../controllers/finanzasController');
-const authMiddleware = require('../middlewares/authMiddleware');
-
 const router = express.Router();
+const { obtenerPagos } = require('../controllers/pagoController');
 
-// Rutas para obtener los balances
-router.get('/balances', authMiddleware, obtenerBalances);
+const { obtenerBalanceGeneral, obtenerEgresos, obtenerSaldoFinal, obtenerIngresosTotales } = require('../controllers/finanzasController');
 
-// Rutas para obtener los detalles de egresos
-router.get('/egresos', authMiddleware, obtenerEgresos);
+// Ruta para obtener el balance general (sin fechas)
+router.get('/balance-general', obtenerBalanceGeneral);
 
-// Rutas para obtener los ingresos totales
-router.get('/ingresos', authMiddleware, obtenerIngresosTotales);
+// Ruta para obtener los egresos
+router.get('/egresos', obtenerEgresos);
 
-// Ruta para obtener el saldo final
-router.get('/saldo', authMiddleware, obtenerSaldoFinal);
+// Ruta para obtener los ingresos totales (no necesitas esta ruta si ya estás obteniendo los ingresos del balance general)
+router.get('/ingresos', obtenerIngresosTotales);
+
+// Ruta para obtener el saldo final (no es necesaria si ya tienes los ingresos y egresos del balance general)
+router.get('/saldo', obtenerSaldoFinal);
+
+// Ruta para obtener los pagos (Detalle de Ingresos)
+router.get('/ingresos-detalles', obtenerPagos);  
 
 module.exports = router;
