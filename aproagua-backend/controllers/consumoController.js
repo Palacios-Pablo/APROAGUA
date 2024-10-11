@@ -1,5 +1,6 @@
 // src/controllers/consumoController.js
 const pool = require('../config/dbconfig');
+const { generarFacturaParaCliente } = require('./facturaController');
 
 // Registrar un nuevo consumo
 exports.registrarConsumo = async (req, res) => {
@@ -14,6 +15,7 @@ exports.registrarConsumo = async (req, res) => {
             'INSERT INTO Consumo (ID_Cliente, Fecha_Inicio, Fecha_Fin, Litraje_Consumido) VALUES (?, ?, ?, ?)',
             [id_cliente, fecha_inicio, fecha_fin, litraje_consumido]
         );
+        await generarFacturaParaCliente(id_cliente); // Llamar a la función que genera la factura
         res.status(201).json({ msg: 'Consumo registrado exitosamente' });
     } catch (err) {
         console.error('Error al registrar consumo:', err);

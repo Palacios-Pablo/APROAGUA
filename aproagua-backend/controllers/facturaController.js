@@ -1,18 +1,103 @@
-// src/controllers/facturaController.js
 const pool = require('../config/dbconfig');
 const PDFDocument = require('pdfkit');  // Para generar PDFs en Node.js
 
-// Generar facturas automáticamente
+// Generar factura para un cliente específico, solo consumos no facturados
+exports.generarFacturaParaCliente = async (id_cliente) => {
+    try {
+        // Obtener el consumo no facturado del cliente en el último mes
+        const [consumos] = await pool.execute(`
+            SELECT * FROM Consumo
+            WHERE ID_Cliente = ? AND Fecha_Inicio >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND Facturado = FALSE
+        `, [id_cliente]);
+
+        if (consumos.length > 0) {
+            // Obtener la tarifa actual del cliente
+            const [tarifaCliente] = await pool.execute(`
+                SELECT t.Precio_Por_Litro FROM Cliente_Tarifa ct
+                JOIN Tarifa t ON ct.ID_Tarifa = t.ID_Tarifa
+                WHERE ct.ID_Cliente = ? AND (ct.Fecha_Fin IS NULL OR ct.Fecha_Fin >= CURDATE())
+                ORDER BY ct.Fecha_Inicio DESC LIMIT 1
+            `, [id_cliente]);
+
+            if (tarifaCliente.length > 0) {
+                const tarifa = tarifaCliente[0].Precio_Por_Litro;
+                let totalConsumo = 0;
+
+                // Calcular el monto total basado en el litraje y la tarifa
+                for (const consumo of consumos) {
+                    totalConsumo += consumo.Litraje_Consumido * tarifa;
+                }
+
+                // Verificar si ya existe una factura pendiente para este cliente
+                const [facturaPendiente] = await pool.execute(`
+                    SELECT * FROM Factura WHERE ID_Cliente = ? AND Estado = 'pendiente'
+                `, [id_cliente]);
+
+                if (facturaPendiente.length === 0) {
+                    // Insertar una nueva factura en la base de datos
+                    await pool.execute(`
+                        INSERT INTO Factura (ID_Cliente, ID_Consumo, Fecha_Emision, Monto, Estado)
+                        VALUES (?, ?, CURDATE(), ?, 'pendiente')
+                    `, [id_cliente, consumos[0].ID_Consumo, totalConsumo]);
+
+                    // Marcar los consumos como facturados
+                    await pool.execute(`
+                        UPDATE Consumo SET Facturado = TRUE WHERE ID_Cliente = ? AND Facturado = FALSE
+                    `, [id_cliente]);
+                } else {
+                    console.log('Ya existe una factura pendiente para este cliente');
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Error al generar factura:', err);
+        throw err;
+    }
+};
+
+// Obtener todas las facturas pendientes
+exports.obtenerFacturasPendientes = async (req, res) => {
+    try {
+        const [facturas] = await pool.execute(`
+            SELECT f.ID_Factura, c.Nombre, c.Apellido, f.Fecha_Emision, f.Monto, f.Estado
+            FROM Factura f
+            JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+            WHERE f.Estado = 'pendiente'
+        `);
+        res.status(200).json(facturas);
+    } catch (err) {
+        console.error('Error al obtener facturas pendientes:', err);
+        res.status(500).json({ msg: 'Error del servidor' });
+    }
+};
+
+// Obtener todas las facturas pagadas
+exports.obtenerFacturasPagadas = async (req, res) => {
+    try {
+        const [facturas] = await pool.execute(`
+            SELECT f.ID_Factura, c.Nombre, c.Apellido, f.Fecha_Emision, f.Monto, f.Estado
+            FROM Factura f
+            JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+            WHERE f.Estado = 'pagado'
+        `);
+        res.status(200).json(facturas);
+    } catch (err) {
+        console.error('Error al obtener facturas pagadas:', err);
+        res.status(500).json({ msg: 'Error del servidor' });
+    }
+};
+
+// Generar facturas automáticamente solo con consumos no facturados
 exports.generarFacturasMensuales = async (req, res) => {
     try {
         // Obtener todos los clientes
         const [clientes] = await pool.execute('SELECT * FROM Cliente');
 
         for (const cliente of clientes) {
-            // Obtener el consumo del cliente en el último mes
+            // Obtener los consumos no facturados del cliente en el último mes
             const [consumos] = await pool.execute(`
                 SELECT * FROM Consumo
-                WHERE ID_Cliente = ? AND Fecha_Inicio >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+                WHERE ID_Cliente = ? AND Fecha_Inicio >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND Facturado = FALSE
             `, [cliente.ID_Cliente]);
 
             if (consumos.length > 0) {
@@ -38,6 +123,11 @@ exports.generarFacturasMensuales = async (req, res) => {
                         INSERT INTO Factura (ID_Cliente, ID_Consumo, Fecha_Emision, Monto, Estado)
                         VALUES (?, ?, CURDATE(), ?, 'pendiente')
                     `, [cliente.ID_Cliente, consumos[0].ID_Consumo, totalConsumo]);
+
+                    // Marcar estos consumos como facturados
+                    await pool.execute(`
+                        UPDATE Consumo SET Facturado = TRUE WHERE ID_Cliente = ? AND Facturado = FALSE
+                    `, [cliente.ID_Cliente]);
                 }
             }
         }
@@ -45,37 +135,6 @@ exports.generarFacturasMensuales = async (req, res) => {
         res.status(201).json({ msg: 'Facturas generadas correctamente' });
     } catch (err) {
         console.error('Error al generar facturas:', err);
-        res.status(500).json({ msg: 'Error del servidor' });
-    }
-};
-
-// Obtener el historial de facturas
-exports.obtenerFacturas = async (req, res) => {
-    try {
-        const [facturas] = await pool.execute(`
-            SELECT f.ID_Factura, c.Nombre, c.Apellido, f.Fecha_Emision, f.Monto, f.Estado
-            FROM Factura f
-            JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
-        `);
-        res.status(200).json(facturas);
-    } catch (err) {
-        console.error('Error al obtener facturas:', err);
-        res.status(500).json({ msg: 'Error del servidor' });
-    }
-};
-
-// Marcar una factura como pagada
-exports.marcarFacturaComoPagada = async (req, res) => {
-    const { id_factura } = req.params;
-
-    try {
-        await pool.execute(`
-            UPDATE Factura SET Estado = 'pagado' WHERE ID_Factura = ?
-        `, [id_factura]);
-
-        res.status(200).json({ msg: 'Factura marcada como pagada' });
-    } catch (err) {
-        console.error('Error al marcar factura como pagada:', err);
         res.status(500).json({ msg: 'Error del servidor' });
     }
 };
