@@ -3,7 +3,7 @@ import EgresoModal from './EgresoModal'; // Modal para agregar/editar egresos
 import axios from 'axios';  // Para hacer peticiones al backend
 import './Egresos.css'; // Estilos personalizados
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt} from '@fortawesome/free-solid-svg-icons';  // Icono de agua
+import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';  // Iconos
 
 const Egresos = () => {
     const [egresos, setEgresos] = useState([]); // Lista de egresos
@@ -61,27 +61,28 @@ const Egresos = () => {
         }
     };
 
-        // Función para actualizar la lista de egresos
-        const actualizarEgresos = async () => {
-            try {
-                const res = await axios.get('http://localhost:3000/api/egresos', {
-                    headers: { 'x-auth-token': localStorage.getItem('token') }
-                });
-                setEgresos(res.data);  // Actualiza la lista de egresos
-            } catch (err) {
-                console.error('Error al obtener egresos', err);
-            }
-        };
-    
-        useEffect(() => {
-            actualizarEgresos();  // Cargar los egresos cuando el componente se monte
-        }, []);
+    // Función para actualizar la lista de egresos
+    const actualizarEgresos = async () => {
+        try {
+            const res = await axios.get('http://localhost:3000/api/egresos', {
+                headers: { 'x-auth-token': localStorage.getItem('token') }
+            });
+            setEgresos(res.data);  // Actualiza la lista de egresos
+        } catch (err) {
+            console.error('Error al obtener egresos', err);
+        }
+    };
 
+    useEffect(() => {
+        actualizarEgresos();  // Cargar los egresos cuando el componente se monte
+    }, []);
 
     // Filtrar egresos por búsqueda
-    const egresosFiltrados = egresos.filter((egreso) =>
-        egreso.Descripcion.toLowerCase().includes(busqueda.toLowerCase())
-    );
+    const egresosFiltrados = egresos
+        .filter((egreso) =>
+            egreso.Descripcion.toLowerCase().includes(busqueda.toLowerCase())
+        )
+        .sort((a, b) => b.ID_Egreso - a.ID_Egreso); // Ordenar por ID de manera descendente
 
     // Obtener egresos para la página actual
     const indexUltimoEgreso = paginaActual * egresosPorPagina;
@@ -128,7 +129,7 @@ const Egresos = () => {
                                         <td>{egreso.ID_Egreso}</td>
                                         <td>{egreso.Fecha}</td>
                                         <td>{egreso.Descripcion}</td>
-                                        <td>Q. {egreso.Monto} </td>
+                                        <td>Q. {egreso.Monto}</td>
                                         <td>
                                             <button
                                                 className="btn btn-warning"
