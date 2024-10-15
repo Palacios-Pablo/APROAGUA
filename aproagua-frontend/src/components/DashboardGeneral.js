@@ -220,9 +220,9 @@ const DashboardGeneral = () => {
                                     <th onClick={() => handleSort('Nombre')}>Nombre</th>
                                     <th onClick={() => handleSort('Ultimo_Consumo')}>Litraje Consumido</th>
                                     <th>Número de Teléfono</th>
-                                    <th onClick={() => handleSort('Zona')}>Zona</th>
-                                    <th onClick={() => handleSort('Ultimo_Mes_Pagado')}>Último Mes Pagado</th>
-                                    <th onClick={() => handleSort('Meses_Pendientes')}>Meses Pendientes</th>
+                                    <th onClick={() => handleSort('Zona')}>Sector</th>
+                                    <th onClick={() => handleSort('Ultimo_Mes_Pagado')}>Último Pago Realizado</th>
+                                    <th onClick={() => handleSort('Meses_Pendientes')}>Pagos Pendientes</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>

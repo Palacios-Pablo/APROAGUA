@@ -116,7 +116,7 @@ const Egresos = () => {
                         <table className="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+
                                     <th>Fecha</th>
                                     <th>Descripción</th>
                                     <th>Monto</th>
@@ -126,7 +126,7 @@ const Egresos = () => {
                             <tbody>
                                 {egresosPaginados.map((egreso) => (
                                     <tr key={egreso.ID_Egreso}>
-                                        <td>{egreso.ID_Egreso}</td>
+                            
                                         <td>{egreso.Fecha}</td>
                                         <td>{egreso.Descripcion}</td>
                                         <td>Q. {egreso.Monto}</td>

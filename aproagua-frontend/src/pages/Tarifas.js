@@ -89,7 +89,7 @@ const Tarifas = () => {
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                    
                         <th>Descripción</th>
                         <th>Precio por Litro</th>
                         <th>Acciones</th>
@@ -98,7 +98,7 @@ const Tarifas = () => {
                 <tbody>
                     {tarifas.map((tarifa) => (
                         <tr key={tarifa.ID_Tarifa}>
-                            <td>{tarifa.ID_Tarifa}</td>
+                           
                             <td>{tarifa.Descripcion}</td>
                             <td>{tarifa.Precio_Por_Litro}</td>
                             <td>

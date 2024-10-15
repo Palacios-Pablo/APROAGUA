@@ -1,11 +1,14 @@
+// src/components/ConsumoForm.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado, clienteSeleccionado }) => {
     const [clientes, setClientes] = useState([]);
     const [idCliente, setIdCliente] = useState(clienteSeleccionado?.ID_Cliente || '');  // Preseleccionar cliente
-    const [fechaInicio, setFechaInicio] = useState('');
-    const [fechaFin, setFechaFin] = useState('');
+    const [mesInicio, setMesInicio] = useState('');
+    const [añoInicio, setAñoInicio] = useState('');
+    const [mesFin, setMesFin] = useState('');
+    const [añoFin, setAñoFin] = useState('');
     const [litrajeConsumido, setLitrajeConsumido] = useState('');
 
     useEffect(() => {
@@ -37,22 +40,32 @@ const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado, clienteSelecc
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Asegurarse que los campos estén llenos
+        if (!mesInicio || !añoInicio || !mesFin || !añoFin) {
+            alert('Debes seleccionar mes y año para el inicio y el fin.');
+            return;
+        }
+
         try {
             await axios.post('http://localhost:3000/api/consumos', {
                 id_cliente: idCliente,
-                fecha_inicio: fechaInicio,
-                fecha_fin: fechaFin,
+                mes_inicio: mesInicio,
+                año_inicio: añoInicio,
+                mes_fin: mesFin,
+                año_fin: añoFin,
                 litraje_consumido: litrajeConsumido
             }, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
 
-            setFechaInicio('');
-            setFechaFin('');
+            // Limpiar los campos después de registrar
+            setMesInicio('');
+            setAñoInicio('');
+            setMesFin('');
+            setAñoFin('');
             setLitrajeConsumido('');
 
             if (onConsumoRegistrado) onConsumoRegistrado();
-
         } catch (err) {
             console.error('Error al registrar consumo', err);
         }
@@ -77,24 +90,56 @@ const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado, clienteSelecc
                 </select>
             </div>
 
+            {/* Selector de Mes y Año de Inicio */}
             <div className="form-group">
-                <label>Fecha de Inicio</label>
-                <input
-                    type="date"
+                <label>Mes de Inicio</label>
+                <select
                     className="form-control"
-                    value={fechaInicio}
-                    onChange={(e) => setFechaInicio(e.target.value)}
+                    value={mesInicio}
+                    onChange={(e) => setMesInicio(e.target.value)}
+                    required
+                >
+                    <option value="">Seleccionar mes</option>
+                    {[...Array(12)].map((_, i) => (
+                        <option key={i + 1} value={String(i + 1).padStart(2, '0')}>
+                            {new Date(0, i).toLocaleString('es-ES', { month: 'long' })}
+                        </option>
+                    ))}
+                </select>
+
+                <label>Año de Inicio</label>
+                <input
+                    type="number"
+                    className="form-control"
+                    value={añoInicio}
+                    onChange={(e) => setAñoInicio(e.target.value)}
                     required
                 />
             </div>
 
+            {/* Selector de Mes y Año de Fin */}
             <div className="form-group">
-                <label>Fecha de Fin</label>
-                <input
-                    type="date"
+                <label>Mes de Fin</label>
+                <select
                     className="form-control"
-                    value={fechaFin}
-                    onChange={(e) => setFechaFin(e.target.value)}
+                    value={mesFin}
+                    onChange={(e) => setMesFin(e.target.value)}
+                    required
+                >
+                    <option value="">Seleccionar mes</option>
+                    {[...Array(12)].map((_, i) => (
+                        <option key={i + 1} value={String(i + 1).padStart(2, '0')}>
+                            {new Date(0, i).toLocaleString('es-ES', { month: 'long' })}
+                        </option>
+                    ))}
+                </select>
+
+                <label>Año de Fin</label>
+                <input
+                    type="number"
+                    className="form-control"
+                    value={añoFin}
+                    onChange={(e) => setAñoFin(e.target.value)}
                     required
                 />
             </div>

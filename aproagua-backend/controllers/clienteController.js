@@ -3,7 +3,12 @@ const pool = require('../config/dbconfig');
 // Obtener todos los clientes
 exports.getClientes = async (req, res) => {
     try {
-        const [rows] = await pool.execute('SELECT * FROM Cliente');
+        const [rows] = await pool.execute(`
+            SELECT Cliente.ID_Cliente, Cliente.Nombre, Cliente.Apellido, Cliente.Numero_Telefono, 
+                   Cliente.Direccion, Cliente.ID_Zona, Zona.Nombre AS Nombre_Zona
+            FROM Cliente
+            LEFT JOIN Zona ON Cliente.ID_Zona = Zona.ID_Zona
+        `);
         res.json(rows);
     } catch (err) {
         console.error('Error al obtener clientes:', err);
@@ -113,24 +118,26 @@ exports.asignarTarifa = async (req, res) => {
 };
 
 
-// Obtener el historial de tarifas de un cliente
+// Obtener el historial de tarifas de un cliente con descripción y precio
 exports.historialTarifas = async (req, res) => {
     const { id_cliente } = req.params;
 
     try {
-        // Obtener el historial de tarifas de la tabla Cliente_Tarifa
-        const [rows] = await pool.execute(
-            'SELECT * FROM Cliente_Tarifa WHERE ID_Cliente = ?', 
-            [id_cliente]
-        );
+        // Obtener la descripción y el precio de la tarifa junto con el historial
+        const [rows] = await pool.execute(`
+            SELECT ct.ID_Tarifa, t.Descripcion, t.Precio_Por_Litro, ct.Fecha_Inicio, ct.Fecha_Fin
+            FROM Cliente_Tarifa ct
+            JOIN Tarifa t ON ct.ID_Tarifa = t.ID_Tarifa
+            WHERE ct.ID_Cliente = ?
+        `, [id_cliente]);
+
         if (rows.length === 0) {
             return res.status(404).json({ msg: 'No se encontró historial de tarifas para este cliente' });
         }
+
         res.json(rows);
     } catch (err) {
         console.error('Error al obtener historial de tarifas:', err);
         res.status(500).json({ msg: 'Error del servidor' });
     }
 };
-
-
