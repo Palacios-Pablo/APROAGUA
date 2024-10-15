@@ -50,7 +50,7 @@ const HistorialFacturasPendientes = () => {
             <table className="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                     
                         <th>Cliente</th>
                         <th>Fecha de Emisión</th>
                         <th>Monto</th>
@@ -60,7 +60,7 @@ const HistorialFacturasPendientes = () => {
                 <tbody>
                     {facturasFiltradas.map(factura => (
                         <tr key={factura.ID_Factura}>
-                            <td>{factura.ID_Factura}</td>
+                            
                             <td>{factura.Nombre} {factura.Apellido}</td>
                             <td>{factura.Fecha_Emision}</td>
                             <td>Q. {factura.Monto}</td>

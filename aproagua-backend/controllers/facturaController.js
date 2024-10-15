@@ -1,16 +1,17 @@
 const pool = require('../config/dbconfig');
 const PDFDocument = require('pdfkit');  // Para generar PDFs en Node.js
 
-// Generar factura para un cliente específico, solo consumos no facturados
-exports.generarFacturaParaCliente = async (id_cliente) => {
-    try {
-        // Obtener el consumo no facturado del cliente en el último mes
-        const [consumos] = await pool.execute(`
-            SELECT * FROM Consumo
-            WHERE ID_Cliente = ? AND Fecha_Inicio >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND Facturado = FALSE
-        `, [id_cliente]);
 
-        if (consumos.length > 0) {
+// Generar factura para un cliente en base a los meses enviados
+exports.generarFacturaParaCliente = async (id_cliente, fecha_inicio, fecha_fin) => {
+    try {
+        // Verificar si ya existe una factura pendiente para el rango de fechas
+        const [facturaExistente] = await pool.execute(`
+            SELECT * FROM Factura 
+            WHERE ID_Cliente = ? AND Fecha_Emision >= ? AND Fecha_Emision <= ? AND Estado = 'pendiente'
+        `, [id_cliente, fecha_inicio, fecha_fin]);
+
+        if (facturaExistente.length === 0) {
             // Obtener la tarifa actual del cliente
             const [tarifaCliente] = await pool.execute(`
                 SELECT t.Precio_Por_Litro FROM Cliente_Tarifa ct
@@ -20,38 +21,48 @@ exports.generarFacturaParaCliente = async (id_cliente) => {
             `, [id_cliente]);
 
             if (tarifaCliente.length > 0) {
-                const tarifa = tarifaCliente[0].Precio_Por_Litro;
-                let totalConsumo = 0;
+                const tarifaPorMes = tarifaCliente[0].Precio_Por_Litro;
 
-                // Calcular el monto total basado en el litraje y la tarifa
-                for (const consumo of consumos) {
-                    totalConsumo += consumo.Litraje_Consumido * tarifa;
+                // Calcular la cantidad de meses entre las fechas de inicio y fin
+                const calcularMeses = (fechaInicio, fechaFin) => {
+                    const fechaInicioDate = new Date(fechaInicio);
+                    const fechaFinDate = new Date(fechaFin);
+
+                    // Calcular diferencia en años y meses
+                    const añosDiferencia = fechaFinDate.getFullYear() - fechaInicioDate.getFullYear();
+                    const mesesDiferencia = fechaFinDate.getMonth() - fechaInicioDate.getMonth();
+
+                    return (añosDiferencia * 12) + mesesDiferencia + 1; // +1 para incluir el mes de inicio
+                };
+
+                const meses = calcularMeses(fecha_inicio, fecha_fin);
+
+                // Validar que el cálculo de meses sea correcto
+                if (meses < 1) {
+                    return res.status(400).json({ msg: 'El rango de fechas seleccionado no es válido.' });
                 }
 
-                // Verificar si ya existe una factura pendiente para este cliente
-                const [facturaPendiente] = await pool.execute(`
-                    SELECT * FROM Factura WHERE ID_Cliente = ? AND Estado = 'pendiente'
-                `, [id_cliente]);
+                // Calcular el monto total basado en los meses y la tarifa por mes
+                const monto = meses * tarifaPorMes;
 
-                if (facturaPendiente.length === 0) {
-                    // Insertar una nueva factura en la base de datos
-                    await pool.execute(`
-                        INSERT INTO Factura (ID_Cliente, ID_Consumo, Fecha_Emision, Monto, Estado)
-                        VALUES (?, ?, CURDATE(), ?, 'pendiente')
-                    `, [id_cliente, consumos[0].ID_Consumo, totalConsumo]);
+                // Registrar la factura por el total de meses
+                await pool.execute(`
+                    INSERT INTO Factura (ID_Cliente, Fecha_Emision, Monto, Estado) 
+                    VALUES (?, CURDATE(), ?, 'pendiente')
+                `, [id_cliente, monto]);
 
-                    // Marcar los consumos como facturados
-                    await pool.execute(`
-                        UPDATE Consumo SET Facturado = TRUE WHERE ID_Cliente = ? AND Facturado = FALSE
-                    `, [id_cliente]);
-                } else {
-                    console.log('Ya existe una factura pendiente para este cliente');
-                }
+                console.log(`Factura generada por ${meses} meses para el cliente ${id_cliente}, monto: ${monto}.`);
+            } else {
+                console.log('No se encontró una tarifa válida para el cliente.');
+                res.status(404).json({ msg: 'No se encontró una tarifa válida para el cliente.' });
             }
+        } else {
+            console.log('Factura pendiente ya existe para este cliente en el rango de fechas.');
+            res.status(400).json({ msg: 'Factura pendiente ya existe para este cliente.' });
         }
     } catch (err) {
         console.error('Error al generar factura:', err);
-        throw err;
+        res.status(500).json({ msg: 'Error del servidor' });
     }
 };
 

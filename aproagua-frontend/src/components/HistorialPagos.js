@@ -43,7 +43,7 @@ const HistorialPagos = () => {
             <table className="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID Pago</th>
+                       
                         <th>Cliente</th>
                         <th>Fecha de Pago</th>
                         <th>Monto Pagado</th>
@@ -54,7 +54,7 @@ const HistorialPagos = () => {
                 <tbody>
                     {pagos.map(pago => (
                         <tr key={pago.ID_Pago}>
-                            <td>{pago.ID_Pago}</td>
+                            
                             <td>{pago.Nombre} {pago.Apellido}</td>
                             <td>{pago.Fecha_Pago}</td>
                             <td>Q. {pago.Monto_Pagado} </td>

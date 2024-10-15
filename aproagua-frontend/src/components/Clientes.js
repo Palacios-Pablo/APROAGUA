@@ -157,7 +157,7 @@ const Clientes = () => {
                                     <th onClick={() => handleSort('Apellido')}>Apellido</th>
                                     <th>Teléfono</th>
                                     <th>Dirección</th>
-                                    <th onClick={() => handleSort('ID_Zona')}>Zona</th>
+                                    <th onClick={() => handleSort('ID_Zona')}>Sector</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -168,7 +168,7 @@ const Clientes = () => {
                                         <td>{cliente.Apellido}</td>
                                         <td>{cliente.Numero_Telefono}</td>
                                         <td>{cliente.Direccion}</td>
-                                        <td>{cliente.ID_Zona}</td>
+                                        <td>{cliente.Nombre_Zona}</td>
                                         <td>
                                             <button className="btn btn-warning" onClick={() => handleEditarCliente(cliente)} data-tooltip-id="tooltip" data-tooltip-content="Editar Cliente">
                                                 <FontAwesomeIcon icon={faEdit} size="lg" />
@@ -201,7 +201,6 @@ const Clientes = () => {
                                 <table className="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>ID Tarifa</th>
                                             <th>Descripción</th>
                                             <th>Fecha Inicio</th>
                                             <th>Fecha Fin</th>
@@ -210,8 +209,7 @@ const Clientes = () => {
                                     <tbody>
                                         {historialTarifas.map((tarifa) => (
                                             <tr key={tarifa.ID_Tarifa}>
-                                                <td>{tarifa.ID_Tarifa}</td>
-                                                <td>{tarifa.Descripcion}</td>
+                                                <td>{tarifa.Descripcion} - Q{tarifa.Precio_Por_Litro}</td>
                                                 <td>{tarifa.Fecha_Inicio}</td>
                                                 <td>{tarifa.Fecha_Fin || 'Vigente'}</td>
                                             </tr>
