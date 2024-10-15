@@ -164,7 +164,7 @@ exports.descargarFacturaPDF = async (req, res) => {
         doc.text(`Factura ID: ${factura[0].ID_Factura}`);
         doc.text(`Cliente: ${factura[0].Nombre} ${factura[0].Apellido}`);
         doc.text(`Fecha de Emisión: ${factura[0].Fecha_Emision}`);
-        doc.text(`Monto: ${factura[0].Monto} USD`);
+        doc.text(`Monto: Q. ${factura[0].Monto}`);
         doc.text(`Estado: ${factura[0].Estado}`);
 
         // Finalizar el documento PDF
