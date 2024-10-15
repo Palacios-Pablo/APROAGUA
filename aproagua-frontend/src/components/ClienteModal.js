@@ -73,10 +73,10 @@ const ClienteModal = ({ isOpen, onClose, cliente }) => {
                     <label>Zona</label>
                     <select className="form-control" value={zona} onChange={(e) => setZona(e.target.value)} required>
                         <option value="">Selecciona una Zona</option>
-                        <option value="1">Zona Norte</option>
-                        <option value="2">Zona Sur</option>
-                        <option value="3">Zona Este</option>
-                        <option value="4">Zona Oeste</option>
+                        <option value="1">Zaculeu Capilla</option>
+                        <option value="2">Zaculeu Ruinas</option>
+                        <option value="3">Zaculeu la Cruz</option>
+                        <option value="4">El Terrero</option>
                     </select>
                 </div>
                 <div className="modal-buttons">

@@ -53,7 +53,7 @@ const AsignarTarifaModal = ({ isOpen, onClose, cliente }) => {
                         <option value="">Selecciona una Tarifa</option>
                         {tarifas.map((tarifa) => (
                             <option key={tarifa.ID_Tarifa} value={tarifa.ID_Tarifa}>
-                                {tarifa.Descripcion} - {tarifa.Precio_Por_Litro} $/Litro
+                                {tarifa.Descripcion} - Q.{tarifa.Precio_Por_Litro}/Mes
                             </option>
                         ))}
                     </select>

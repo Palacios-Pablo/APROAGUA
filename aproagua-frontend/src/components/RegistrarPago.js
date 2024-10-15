@@ -72,7 +72,7 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
                     <option value="">Seleccionar factura</option>
                     {facturasPendientes.map(factura => (
                         <option key={factura.ID_Factura} value={factura.ID_Factura}>
-                            {factura.Nombre} {factura.Apellido} - {factura.Monto} USD
+                            {factura.Nombre} {factura.Apellido} - {factura.Monto} 
                         </option>
                     ))}
                 </select>
