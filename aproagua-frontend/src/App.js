@@ -2,19 +2,21 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 
-import Modal from 'react-modal';  // Importar react-modal
+import Modal from 'react-modal';
 
-import Navbar from './components/Navbar';   // Navbar para las páginas públicas
-import DashboardLayout from './components/DashboardLayout';  // Layout con Sidebar
+import Navbar from './components/Navbar';   
+import DashboardLayout from './components/DashboardLayout'; 
 import Home from './pages/Home';
 import Servicios from './pages/Servicios';
 import Contacto from './pages/Contacto';
 import QuienesSomos from './pages/QuienesSomos';
 import Tarifas from './pages/Tarifas';
+import LoginForm from './components/LoginForm'; // Importar el LoginForm
+import RutaProtegida from './components/RutaProtegida'; // Importar RutaProtegida
 
 // Páginas del sistema de gestión
 import DashboardPage from './pages/DashboardPage';
-import ClientesPage from './pages/ClientesPage';  // Cambiar a ClientesPage
+import ClientesPage from './pages/ClientesPage';
 import Consumo from './pages/Consumo';
 import Facturacion from './pages/Facturacion';
 import Pagos from './pages/Pagos';
@@ -28,7 +30,7 @@ Modal.setAppElement('#root');  // Establece el elemento raíz de la aplicación
 function AppLayout({ children }) {
     const location = useLocation();
     
-    // Ocultar el Navbar en rutas que incluyan "/dashboard", "/clientes", etc.
+    // Ocultar el Navbar en rutas protegidas
     const hideNavbar = location.pathname.startsWith('/dashboard') || 
                        location.pathname.startsWith('/clientes') || 
                        location.pathname.startsWith('/consumo') || 
@@ -57,17 +59,73 @@ function App() {
                     <Route path="/servicios" element={<Servicios />} />
                     <Route path="/contacto" element={<Contacto />} />
                     <Route path="/quienes-somos" element={<QuienesSomos />} />
+                    <Route path="/login" element={<LoginForm />} />  {/* Ruta pública de login */}
 
-                    {/* Rutas del sistema de gestión con Sidebar */}
-                    <Route path="/dashboard" element={<DashboardLayout><DashboardPage /></DashboardLayout>} />
-                    <Route path="/clientes" element={<DashboardLayout><ClientesPage /></DashboardLayout>} />
-                    <Route path="/consumo" element={<DashboardLayout><Consumo /></DashboardLayout>} />
-                    <Route path="/facturacion" element={<DashboardLayout><Facturacion /></DashboardLayout>} />
-                    <Route path="/pagos" element={<DashboardLayout><Pagos /></DashboardLayout>} />
-                    <Route path="/reportes" element={<DashboardLayout><Reportes /></DashboardLayout>} />
-                    <Route path="/finanzas" element={<DashboardLayout><Finanzas /></DashboardLayout>} />
-                    <Route path="/tarifas" element={<DashboardLayout><Tarifas /></DashboardLayout>} />
-                    <Route path="/egresos" element={<DashboardLayout><EgresosPage /></DashboardLayout>} />
+                    {/* Rutas protegidas */}
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <RutaProtegida>
+                                <DashboardLayout><DashboardPage /></DashboardLayout>
+                            </RutaProtegida>
+                        }
+                    />
+                    <Route
+                        path="/clientes"
+                        element={
+                            <RutaProtegida>
+                                <DashboardLayout><ClientesPage /></DashboardLayout>
+                            </RutaProtegida>
+                        }
+                    />
+                    <Route
+                        path="/consumo"
+                        element={
+                            <RutaProtegida>
+                                <DashboardLayout><Consumo /></DashboardLayout>
+                            </RutaProtegida>
+                        }
+                    />
+                    <Route
+                        path="/facturacion"
+                        element={
+                            <RutaProtegida>
+                                <DashboardLayout><Facturacion /></DashboardLayout>
+                            </RutaProtegida>
+                        }
+                    />
+                    <Route
+                        path="/pagos"
+                        element={
+                            <RutaProtegida>
+                                <DashboardLayout><Pagos /></DashboardLayout>
+                            </RutaProtegida>
+                        }
+                    />
+                    <Route
+                        path="/reportes"
+                        element={
+                            <RutaProtegida>
+                                <DashboardLayout><Reportes /></DashboardLayout>
+                            </RutaProtegida>
+                        }
+                    />
+                    <Route
+                        path="/finanzas"
+                        element={
+                            <RutaProtegida>
+                                <DashboardLayout><Finanzas /></DashboardLayout>
+                            </RutaProtegida>
+                        }
+                    />
+                    <Route
+                        path="/egresos"
+                        element={
+                            <RutaProtegida>
+                                <DashboardLayout><EgresosPage /></DashboardLayout>
+                            </RutaProtegida>
+                        }
+                    />
                 </Routes>
             </AppLayout>
         </Router>
