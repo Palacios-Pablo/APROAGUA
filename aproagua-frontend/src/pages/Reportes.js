@@ -79,6 +79,7 @@ const Reportes = () => {
                             <option value="ingresos">Reporte de Ingresos</option>
                             <option value="consumo">Reporte de Consumo</option>
                             <option value="facturacion">Reporte de Facturación</option>
+                            <option value="egresos">Reporte de Egresos</option>
                         </select>
                     </div>
 

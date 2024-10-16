@@ -67,7 +67,7 @@ const HistorialFacturasPagadas = () => {
                         <th>Cliente</th>
                         <th>Fecha de Emisión</th>
                         <th>Monto</th>
-                        <th>Acciones</th>
+                        {/* <th>Acciones</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -77,11 +77,11 @@ const HistorialFacturasPagadas = () => {
                             <td>{factura.Nombre} {factura.Apellido}</td>
                             <td>{factura.Fecha_Emision}</td>
                             <td>Q. {factura.Monto}</td>
-                            <td>
+                            {/* <td>
                                 <button className="btn btn-pdf1" onClick={() => handleDescargarPDF(factura.ID_Factura)}>
                                 <FontAwesomeIcon icon={faFilePdf} />
                                 </button>
-                            </td>
+                            </td> */}
                         </tr>
                     ))}
                 </tbody>
