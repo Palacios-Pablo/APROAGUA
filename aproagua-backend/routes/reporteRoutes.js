@@ -1,6 +1,7 @@
 // src/routes/reporteRoutes.js
 const express = require('express');
 const {
+    generarReporteEgresos,
     generarReporteIngresos,
     generarReporteConsumo,
     generarReporteFacturacion,
@@ -9,6 +10,10 @@ const {
 } = require('../controllers/reporteController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router();
+
+
+// Reporte de egresos
+router.get('/egresos', authMiddleware, generarReporteEgresos);
 
 // Reporte de ingresos
 router.get('/ingresos', authMiddleware, generarReporteIngresos);
