@@ -1,10 +1,11 @@
+// src/components/Clientes.js
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faHistory, faTint, faReceipt} from '@fortawesome/free-solid-svg-icons';  // Icono de agua
+import { faEdit, faTrashAlt, faHistory, faTint, faReceipt } from '@fortawesome/free-solid-svg-icons';
 import ClienteModal from './ClienteModal';
 import AsignarTarifaModal from './AsignarTarifaModal';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';  // Para redireccionar a la página de consumo
+import { useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import './Clientes.css';
@@ -22,20 +23,22 @@ const Clientes = () => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [visibleHistorial, setVisibleHistorial] = useState(null);
 
-    const navigate = useNavigate();  // Hook para redireccionar
+    const navigate = useNavigate();
+
+    // Función para obtener clientes desde la API
+    const fetchClientes = async () => {
+        try {
+            const res = await axios.get('http://localhost:3000/api/clientes', {
+                headers: { 'x-auth-token': localStorage.getItem('token') }
+            });
+            setClientes(res.data);
+        } catch (err) {
+            console.error('Error al obtener clientes', err);
+        }
+    };
 
     useEffect(() => {
-        const obtenerClientes = async () => {
-            try {
-                const res = await axios.get('http://localhost:3000/api/clientes', {
-                    headers: { 'x-auth-token': localStorage.getItem('token') }
-                });
-                setClientes(res.data);
-            } catch (err) {
-                console.error('Error al obtener clientes', err);
-            }
-        };
-        obtenerClientes();
+        fetchClientes();
     }, []);
 
     const handleAgregarCliente = () => {
@@ -54,7 +57,7 @@ const Clientes = () => {
                 await axios.delete(`http://localhost:3000/api/clientes/${id_cliente}`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
-                setClientes(clientes.filter(cliente => cliente.ID_Cliente !== id_cliente));
+                fetchClientes();  // Refrescar la lista de clientes después de eliminar
             } catch (err) {
                 console.error('Error al eliminar cliente', err.response || err);
             }
@@ -66,7 +69,6 @@ const Clientes = () => {
         setIsTarifaModalOpen(true);
     };
 
-    // Función para mostrar u ocultar historial
     const handleVerHistorialTarifas = async (id_cliente) => {
         if (visibleHistorial === id_cliente) {
             setVisibleHistorial(null);
@@ -85,9 +87,8 @@ const Clientes = () => {
         }
     };
 
-    // Función para redirigir a la página de consumo con el cliente seleccionado
     const handleRegistrarConsumo = (cliente) => {
-        navigate('/consumo', { state: { cliente } });  // Redirigir y pasar los datos del cliente
+        navigate('/consumo', { state: { cliente } });
     };
 
     const handleSearchChange = (e) => {
@@ -138,7 +139,6 @@ const Clientes = () => {
                     <h1>Gestión de Clientes</h1>
                     <button className="btn btn-primary mb-3" onClick={handleAgregarCliente}>Agregar Cliente</button>
 
-                    {/* Buscador */}
                     <div className="search-container">
                         <input
                             type="text"
@@ -148,7 +148,6 @@ const Clientes = () => {
                         />
                     </div>
 
-                    {/* Tabla */}
                     <div className="table-responsive">
                         <table className="table table-striped">
                             <thead>
@@ -179,12 +178,11 @@ const Clientes = () => {
                                             <button className="btn btn-history" onClick={() => handleVerHistorialTarifas(cliente.ID_Cliente)} data-tooltip-id="tooltip" data-tooltip-content="Ver Historial de Tarifas">
                                                 <FontAwesomeIcon icon={faHistory} size="lg" />
                                             </button>
-                                            <button className="btn btn-info" onClick={() => handleAsignarTarifa(cliente)}  data-tooltip-id="tooltip" data-tooltip-content="Asignar Tarifa">
-                                                <FontAwesomeIcon icon={faReceipt} size="lg" /> 
+                                            <button className="btn btn-info" onClick={() => handleAsignarTarifa(cliente)} data-tooltip-id="tooltip" data-tooltip-content="Asignar Tarifa">
+                                                <FontAwesomeIcon icon={faReceipt} size="lg" />
                                             </button>
-                                            {/* Botón para registrar consumo */}
                                             <button className="btn btn-consumo" onClick={() => handleRegistrarConsumo(cliente)} data-tooltip-id="tooltip" data-tooltip-content="Registrar Consumo">
-                                                <FontAwesomeIcon icon={faTint} size="lg" /> {/* Ícono de agua */}
+                                                <FontAwesomeIcon icon={faTint} size="lg" />
                                             </button>
                                         </td>
                                     </tr>
@@ -193,7 +191,6 @@ const Clientes = () => {
                         </table>
                     </div>
 
-                    {/* Historial de Tarifas */}
                     {visibleHistorial && (
                         <div className="historial-tarifas">
                             <h2>Historial de Tarifas</h2>
@@ -220,7 +217,6 @@ const Clientes = () => {
                         </div>
                     )}
 
-                    {/* Paginación */}
                     <div className="pagination">
                         {[...Array(totalPages)].map((_, index) => (
                             <button
@@ -233,11 +229,15 @@ const Clientes = () => {
                         ))}
                     </div>
 
-                    <ClienteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} cliente={clienteSeleccionado} />
+                    <ClienteModal
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                        cliente={clienteSeleccionado}
+                        onClienteGuardado={fetchClientes}  // Refrescar la lista de clientes después de guardar
+                    />
                     <AsignarTarifaModal isOpen={isTarifaModalOpen} onClose={() => setIsTarifaModalOpen(false)} cliente={clienteParaTarifa} />
                 </div>
             </section>
-            {/* Renderizando el tooltip afuera de los botones */}
             <Tooltip id="tooltip" />
         </div>
     );
