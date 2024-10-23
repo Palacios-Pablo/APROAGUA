@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
-import config from '../../config';
+import config from '../config';
 
 const ClienteModal = ({ isOpen, onClose, cliente, onClienteGuardado }) => {
     const [nombre, setNombre] = useState('');

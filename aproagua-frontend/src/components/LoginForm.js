@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';  // Importamos axios para hacer la solicitud al backend
 import './LoginForm.css';  // Asegúrate de que los estilos para el modal estén configurados correctamente
-import config from '../../config';
+import config from '../config';
 const LoginForm = ({ onClose }) => {
     const [username, setUsername] = useState('');  // Estado para almacenar el usuario
     const [password, setPassword] = useState('');  // Estado para almacenar la contraseña

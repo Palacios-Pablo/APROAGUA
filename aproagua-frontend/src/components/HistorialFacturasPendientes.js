@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Importamos useNavigate para redirigir
-import config from '../../config';
+import config from '../config';
 const HistorialFacturasPendientes = () => {
     const [facturas, setFacturas] = useState([]);
     const [busqueda, setBusqueda] = useState(''); // Estado para el filtro de búsqueda

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
-import config from '../../config';
+import config from '../config';
 const Tarifas = () => {
     const [tarifas, setTarifas] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);

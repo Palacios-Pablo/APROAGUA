@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';  // Para recibir el estado
-import config from '../../config';
+import config from '../config';
 
 const RegistrarPago = ({ onPagoRegistrado }) => {
     const [facturasPendientes, setFacturasPendientes] = useState([]);

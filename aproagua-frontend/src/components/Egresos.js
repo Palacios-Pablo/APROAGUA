@@ -4,7 +4,7 @@ import axios from 'axios';  // Para hacer peticiones al backend
 import './Egresos.css'; // Estilos personalizados
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';  // Iconos
-import config from '../../config';
+import config from '../config';
 const Egresos = () => {
     const [egresos, setEgresos] = useState([]); // Lista de egresos
     const [isModalOpen, setIsModalOpen] = useState(false); // Estado para abrir/cerrar el modal
