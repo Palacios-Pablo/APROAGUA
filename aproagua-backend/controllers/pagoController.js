@@ -10,7 +10,7 @@ exports.registrarPago = async (req, res) => {
 
     try {
         // Verificar que la factura esté pendiente
-        const [factura] = await pool.execute('SELECT Monto, Estado FROM Factura WHERE ID_Factura = ?', [id_factura]);
+        const [factura] = await pool.execute('SELECT Monto, Estado FROM factura WHERE ID_Factura = ?', [id_factura]);
 
         if (factura.length === 0) {
             return res.status(404).json({ msg: 'Factura no encontrada' });
@@ -22,27 +22,27 @@ exports.registrarPago = async (req, res) => {
 
         // Insertar el pago en la tabla Pago
         await pool.execute(
-            'INSERT INTO Pago (ID_Factura, ID_Balance, Fecha_Pago, Monto_Pagado) VALUES (?, ?, ?, ?)',
+            'INSERT INTO pago (ID_Factura, ID_Balance, Fecha_Pago, Monto_Pagado) VALUES (?, ?, ?, ?)',
             [id_factura, 1, fecha_pago, monto_pagado]  // ID_Balance es fijo, siempre apunta al balance general (ID=1)
         );
 
         // Actualizar el balance general (ID_Balance = 1)
-        const [balance] = await pool.execute('SELECT * FROM Balance WHERE ID_Balance = 1');
+        const [balance] = await pool.execute('SELECT * FROM balance WHERE ID_Balance = 1');
         let nuevoSaldo = balance.length > 0 ? balance[0].Saldo + monto_pagado : monto_pagado;
 
         await pool.execute(
-            'UPDATE Balance SET Total_Ingresos = Total_Ingresos + ?, Saldo = ? WHERE ID_Balance = 1',
+            'UPDATE balance SET Total_Ingresos = Total_Ingresos + ?, Saldo = ? WHERE ID_Balance = 1',
             [monto_pagado, nuevoSaldo]
         );
 
         // Verificar si el monto pagado cubre el total de la factura y marcarla como pagada
         const [pagosAcumulados] = await pool.execute(
-            'SELECT SUM(Monto_Pagado) AS TotalPagado FROM Pago WHERE ID_Factura = ?',
+            'SELECT SUM(Monto_Pagado) AS TotalPagado FROM pago WHERE ID_Factura = ?',
             [id_factura]
         );
 
         if (pagosAcumulados[0].TotalPagado >= factura[0].Monto) {
-            await pool.execute('UPDATE Factura SET Estado = ? WHERE ID_Factura = ?', ['pagado', id_factura]);
+            await pool.execute('UPDATE factura SET Estado = ? WHERE ID_Factura = ?', ['pagado', id_factura]);
         }
 
         res.status(201).json({ msg: 'Pago registrado correctamente' });
@@ -57,10 +57,10 @@ exports.obtenerPagos = async (req, res) => {
     try {
         const [pagos] = await pool.execute(`
             SELECT p.ID_Pago, p.Fecha_Pago, p.Monto_Pagado, f.ID_Factura, c.Nombre, c.Apellido, b.Saldo
-            FROM Pago p
-            JOIN Factura f ON p.ID_Factura = f.ID_Factura
-            JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
-            LEFT JOIN Balance b ON p.ID_Balance = b.ID_Balance
+            FROM pago p
+            JOIN factura f ON p.ID_Factura = f.ID_Factura
+            JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
+            LEFT JOIN balance b ON p.ID_Balance = b.ID_Balance
         `);
         res.status(200).json(pagos);
     } catch (err) {
@@ -75,7 +75,7 @@ exports.revertirPago = async (req, res) => {
 
     try {
         // Obtener el pago a revertir
-        const [pago] = await pool.execute('SELECT * FROM Pago WHERE ID_Pago = ?', [id_pago]);
+        const [pago] = await pool.execute('SELECT * FROM pago WHERE ID_Pago = ?', [id_pago]);
 
         if (pago.length === 0) {
             return res.status(404).json({ msg: 'Pago no encontrado' });
@@ -86,25 +86,25 @@ exports.revertirPago = async (req, res) => {
         const idBalance = pago[0].ID_Balance;
 
         // Eliminar el pago
-        await pool.execute('DELETE FROM Pago WHERE ID_Pago = ?', [id_pago]);
+        await pool.execute('DELETE FROM pago WHERE ID_Pago = ?', [id_pago]);
 
         // Actualizar el balance general (ID_Balance = 1)
         await pool.execute(
-            'UPDATE Balance SET Total_Ingresos = Total_Ingresos - ?, Saldo = Saldo - ? WHERE ID_Balance = 1', 
+            'UPDATE balance SET Total_Ingresos = Total_Ingresos - ?, Saldo = Saldo - ? WHERE ID_Balance = 1', 
             [montoPagado, montoPagado]
         );
 
         // Verificar si la factura debe volver a estado pendiente
         const [factura] = await pool.execute(`
             SELECT f.ID_Factura, f.Monto, SUM(p.Monto_Pagado) AS TotalPagado
-            FROM Factura f
-            LEFT JOIN Pago p ON f.ID_Factura = p.ID_Factura
+            FROM factura f
+            LEFT JOIN pago p ON f.ID_Factura = p.ID_Factura
             WHERE f.ID_Factura = ?
             GROUP BY f.ID_Factura
         `, [idFactura]);
 
         if (factura.length > 0 && factura[0].TotalPagado < factura[0].Monto) {
-            await pool.execute('UPDATE Factura SET Estado = ? WHERE ID_Factura = ?', ['pendiente', idFactura]);
+            await pool.execute('UPDATE factura SET Estado = ? WHERE ID_Factura = ?', ['pendiente', idFactura]);
         }
 
         res.status(200).json({ msg: 'Pago revertido correctamente' });

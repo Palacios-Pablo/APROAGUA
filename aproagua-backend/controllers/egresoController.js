@@ -3,7 +3,7 @@ const pool = require('../config/dbconfig');  // Conexión a la base de datos
 // Obtener todos los egresos
 exports.getEgresos = async (req, res) => {
     try {
-        const [egresos] = await pool.query('SELECT * FROM Egreso');
+        const [egresos] = await pool.query('SELECT * FROM egreso');
         res.json(egresos);
     } catch (err) {
         console.error(err);
@@ -20,7 +20,7 @@ exports.createEgreso = async (req, res) => {
     }
 
     try {
-        await pool.query('INSERT INTO Egreso (Fecha, Descripcion, Monto, ID_Balance) VALUES (?, ?, ?, ?)', [fecha, descripcion, monto, id_balance]);
+        await pool.query('INSERT INTO egreso (Fecha, Descripcion, Monto, ID_Balance) VALUES (?, ?, ?, ?)', [fecha, descripcion, monto, id_balance]);
         res.json({ msg: 'Egreso registrado con éxito' });
     } catch (err) {
         console.error(err);
@@ -41,7 +41,7 @@ exports.updateEgreso = async (req, res) => {
     try {
         // Ejecutamos la consulta SQL para actualizar el egreso
         const [result] = await pool.query(
-            'UPDATE Egreso SET Fecha = ?, Descripcion = ?, Monto = ?, ID_Balance = ? WHERE ID_Egreso = ?', 
+            'UPDATE egreso SET Fecha = ?, Descripcion = ?, Monto = ?, ID_Balance = ? WHERE ID_Egreso = ?', 
             [fecha, descripcion, monto, id_balance, id]
         );
 
@@ -62,7 +62,7 @@ exports.deleteEgreso = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [result] = await pool.query('DELETE FROM Egreso WHERE ID_Egreso = ?', [id]);
+        const [result] = await pool.query('DELETE FROM egreso WHERE ID_Egreso = ?', [id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ msg: 'Egreso no encontrado' });
         }

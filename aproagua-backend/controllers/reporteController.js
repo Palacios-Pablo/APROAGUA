@@ -78,7 +78,7 @@ exports.generarReporteEgresos = async (req, res) => {
         // Consulta SQL para obtener egresos entre las fechas dadas
         const [result] = await pool.execute(
             `SELECT e.Fecha, e.Descripcion, e.Monto
-            FROM Egreso e
+            FROM egreso e
             WHERE e.Fecha BETWEEN ? AND ?`,
             [fechaInicio, fechaFin]
         );
@@ -97,9 +97,9 @@ exports.generarReporteIngresos = async (req, res) => {
     try {
         const [result] = await pool.execute(
             `SELECT p.Fecha_Pago, p.Monto_Pagado, c.Nombre, c.Apellido
-            FROM Pago p
-            JOIN Factura f ON p.ID_Factura = f.ID_Factura
-            JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+            FROM pago p
+            JOIN factura f ON p.ID_Factura = f.ID_Factura
+            JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
             WHERE p.Fecha_Pago BETWEEN ? AND ?`,
             [fechaInicio, fechaFin]
         );
@@ -119,8 +119,8 @@ exports.generarReporteConsumo = async (req, res) => {
         // Consulta SQL para obtener los datos de consumo entre las fechas dadas
         const [result] = await pool.execute(
             `SELECT c.Nombre, c.Apellido, con.Fecha_Inicio, con.Fecha_Fin, con.Litraje_Consumido
-            FROM Consumo con
-            JOIN Cliente c ON con.ID_Cliente = c.ID_Cliente
+            FROM consumo con
+            JOIN cliente c ON con.ID_Cliente = c.ID_Cliente
             WHERE con.Fecha_Inicio BETWEEN ? AND ?`,
             [fechaInicio, fechaFin]
         );
@@ -140,8 +140,8 @@ exports.generarReporteFacturacion = async (req, res) => {
     try {
         const [result] = await pool.execute(
             `SELECT f.Fecha_Emision, f.Monto, f.Estado, c.Nombre, c.Apellido
-            FROM Factura f
-            JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+            FROM factura f
+            JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
             WHERE f.Fecha_Emision BETWEEN ? AND ?`,
             [fechaInicio, fechaFin]
         );
@@ -177,14 +177,14 @@ exports.generarReporteExcel = async (req, res) => {
         let columns, data, columnWidths, numberColumns;
 
         if (tipo === 'ingresos') {
-            columns = ['Fecha de Pago', 'Monto Pagado', 'Nombre Cliente', 'Apellido Cliente'];
+            columns = ['Fecha de Pago', 'Monto Pagado', 'Nombre cliente', 'Apellido cliente'];
             columnWidths = [20, 15, 25, 25];  // Anchos para cada columna
             numberColumns = [1];  // Índice de la columna de "Monto Pagado" que es numérica
             const [result] = await pool.execute(
                 `SELECT p.Fecha_Pago, p.Monto_Pagado, c.Nombre, c.Apellido
-                FROM Pago p
-                JOIN Factura f ON p.ID_Factura = f.ID_Factura
-                JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+                FROM pago p
+                JOIN factura f ON p.ID_Factura = f.ID_Factura
+                JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
                 WHERE p.Fecha_Pago BETWEEN ? AND ?`,
                 [fechaInicio, fechaFin]
             );
@@ -195,8 +195,8 @@ exports.generarReporteExcel = async (req, res) => {
             numberColumns = [4];  // Índice de la columna de "Litraje Consumido" que es numérica
             const [result] = await pool.execute(
                 `SELECT c.Nombre, c.Apellido, con.Fecha_Inicio, con.Fecha_Fin, con.Litraje_Consumido
-                FROM Consumo con
-                JOIN Cliente c ON con.ID_Cliente = c.ID_Cliente
+                FROM consumo con
+                JOIN cliente c ON con.ID_Cliente = c.ID_Cliente
                 WHERE con.Fecha_Inicio BETWEEN ? AND ?`,
                 [fechaInicio, fechaFin]
             );
@@ -208,8 +208,8 @@ exports.generarReporteExcel = async (req, res) => {
             numberColumns = [1];  // Índice de la columna de "Monto" que es numérica
             const [result] = await pool.execute(
                 `SELECT f.Fecha_Emision, f.Monto, f.Estado, c.Nombre, c.Apellido
-                FROM Factura f
-                JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+                FROM factura f
+                JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
                 WHERE f.Fecha_Emision BETWEEN ? AND ?`,
                 [fechaInicio, fechaFin]
             );
@@ -220,7 +220,7 @@ exports.generarReporteExcel = async (req, res) => {
             numberColumns = [2];  // Índice de la columna de "Monto" que es numérica
             const [result] = await pool.execute(
                 `SELECT e.Fecha, e.Descripcion, e.Monto
-                FROM Egreso e
+                FROM egreso e
                 WHERE e.Fecha BETWEEN ? AND ?`,
                 [fechaInicio, fechaFin]
             );
@@ -296,9 +296,9 @@ exports.generarReportePDF = async (req, res) => {
         if (tipo === 'ingresos') {
             const [result] = await pool.execute(
                 `SELECT p.Fecha_Pago AS "Fecha_Pago", p.Monto_Pagado AS "Monto", c.Nombre, c.Apellido
-                FROM Pago p
-                JOIN Factura f ON p.ID_Factura = f.ID_Factura
-                JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+                FROM pago p
+                JOIN factura f ON p.ID_Factura = f.ID_Factura
+                JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
                 WHERE p.Fecha_Pago BETWEEN ? AND ?`,
                 [fechaInicio, fechaFin]
             );
@@ -316,8 +316,8 @@ exports.generarReportePDF = async (req, res) => {
         } else if (tipo === 'consumo') {
             const [result] = await pool.execute(
                 `SELECT c.Nombre, c.Apellido, con.Fecha_Inicio AS "Fecha_Inicio", con.Fecha_Fin AS "Fecha_Fin", con.Litraje_Consumido AS "Litraje_Consumido"
-                FROM Consumo con
-                JOIN Cliente c ON con.ID_Cliente = c.ID_Cliente
+                FROM consumo con
+                JOIN cliente c ON con.ID_Cliente = c.ID_Cliente
                 WHERE con.Fecha_Inicio BETWEEN ? AND ?`,
                 [fechaInicio, fechaFin]
             );
@@ -336,8 +336,8 @@ exports.generarReportePDF = async (req, res) => {
         } else if (tipo === 'facturacion') {
             const [result] = await pool.execute(
                 `SELECT f.Fecha_Emision AS "Fecha_Emision", f.Monto, f.Estado, c.Nombre, c.Apellido
-                FROM Factura f
-                JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+                FROM factura f
+                JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
                 WHERE f.Fecha_Emision BETWEEN ? AND ?`,
                 [fechaInicio, fechaFin]
             );
@@ -355,7 +355,7 @@ exports.generarReportePDF = async (req, res) => {
         }else if (tipo === 'egresos') {
             const [result] = await pool.execute(
                 `SELECT e.Fecha AS "Fecha", e.Descripcion AS "Descripcion", e.Monto AS "Monto"
-                FROM Egreso e
+                FROM egreso e
                 WHERE e.Fecha BETWEEN ? AND ?`,
                 [fechaInicio, fechaFin]
             );

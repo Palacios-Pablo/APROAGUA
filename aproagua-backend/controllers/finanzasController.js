@@ -6,7 +6,7 @@ exports.obtenerBalanceGeneral = async (req, res) => {
     try {
         // No necesitamos filtrar por fecha, ya que solo habrá un balance general
         const [result] = await pool.execute(
-            `SELECT Total_Ingresos, Total_Egresos, (Total_Ingresos - Total_Egresos) AS Saldo FROM Balance WHERE ID_Balance = 1`
+            `SELECT Total_Ingresos, Total_Egresos, (Total_Ingresos - Total_Egresos) AS Saldo FROM balance WHERE ID_Balance = 1`
         );
         res.status(200).json(result[0] || { Total_Ingresos: 0, Total_Egresos: 0, Saldo: 0 });
     } catch (err) {
@@ -19,7 +19,7 @@ exports.obtenerBalanceGeneral = async (req, res) => {
 exports.obtenerEgresos = async (req, res) => {
     try {
         const [result] = await pool.execute(
-            `SELECT Fecha, Descripcion, Monto FROM Egreso`
+            `SELECT Fecha, Descripcion, Monto FROM egreso`
         );
         res.status(200).json(result);
     } catch (err) {
@@ -32,7 +32,7 @@ exports.obtenerEgresos = async (req, res) => {
 exports.obtenerIngresosTotales = async (req, res) => {
     try {
         const [result] = await pool.execute(
-            `SELECT SUM(Monto_Pagado) AS Total_Ingresos FROM Pago`
+            `SELECT SUM(Monto_Pagado) AS Total_Ingresos FROM pago`
         );
         res.status(200).json(result[0] || { Total_Ingresos: 0 });
     } catch (err) {
@@ -45,7 +45,7 @@ exports.obtenerIngresosTotales = async (req, res) => {
 exports.obtenerSaldoFinal = async (req, res) => {
     try {
         const [result] = await pool.execute(
-            `SELECT (Total_Ingresos - Total_Egresos) AS Saldo FROM Balance WHERE ID_Balance = 1`
+            `SELECT (Total_Ingresos - Total_Egresos) AS Saldo FROM balance WHERE ID_Balance = 1`
         );
         res.status(200).json(result[0] || { Saldo: 0 });
     } catch (err) {
