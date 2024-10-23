@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import './Clientes.css';
-import config from '../../config';
+import config from '../config';
 const Clientes = () => {
     const [clientes, setClientes] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);

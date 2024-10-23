@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import config from '../../config';
+import config from '../config';
 const HistorialPagos = () => {
     const [pagos, setPagos] = useState([]);
 

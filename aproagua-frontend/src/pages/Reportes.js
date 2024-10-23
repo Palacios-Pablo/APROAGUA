@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';  // Importar FontAwesomeIcon
 import { faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons';  // Íconos de Excel y PDF
 import './Reportes.css';  // Asegúrate de enlazar el archivo CSS
-import config from '../../config';
+import config from '../config';
 
 const Reportes = () => {
     const [tipoReporte, setTipoReporte] = useState('');

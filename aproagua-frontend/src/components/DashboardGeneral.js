@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Bar, Pie } from 'react-chartjs-2';
-import config from '../../config';
+import config from '../config';
 import {
     Chart as ChartJS,
     CategoryScale,

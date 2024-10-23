@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons';
-import config from '../../config';
+import config from '../config';
 const HistorialFacturasPagadas = () => {
     const [facturas, setFacturas] = useState([]);
     const [busqueda, setBusqueda] = useState(''); // Estado para el filtro de búsqueda

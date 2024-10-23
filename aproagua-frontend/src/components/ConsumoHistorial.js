@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {faTrashAlt} from '@fortawesome/free-solid-svg-icons';  // Icono de agua
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import config from '../../config';
+import config from '../config';
 
 const ConsumoHistorial = ({ idCliente, onConsumoActualizado }) => {
     const [consumos, setConsumos] = useState([]);

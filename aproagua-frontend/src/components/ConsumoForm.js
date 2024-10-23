@@ -1,7 +1,7 @@
 // src/components/ConsumoForm.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import config from '../../config';
+import config from '../config';
 
 const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado, clienteSeleccionado }) => {
     const [clientes, setClientes] = useState([]);
