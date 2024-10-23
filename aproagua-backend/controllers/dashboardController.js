@@ -6,15 +6,15 @@ exports.obtenerResumenClientes = async (req, res) => {
     try {
         const [result] = await pool.execute(`
             SELECT
-                Cliente.Nombre,
-                Cliente.Apellido,
-                Cliente.Numero_Telefono,
-                Zona.Nombre as Zona,
-                (SELECT Litraje_Consumido FROM Consumo WHERE ID_Cliente = Cliente.ID_Cliente ORDER BY Fecha_Fin DESC LIMIT 1) AS Ultimo_Consumo,
-                (SELECT MAX(Fecha_Emision) FROM Factura WHERE ID_Cliente = Cliente.ID_Cliente AND Estado = 'pagado') AS Ultimo_Mes_Pagado,
-                (SELECT COUNT(*) FROM Factura WHERE ID_Cliente = Cliente.ID_Cliente AND Estado = 'pendiente') AS Meses_Pendientes
-            FROM Cliente
-            LEFT JOIN Zona ON Cliente.ID_Zona = Zona.ID_Zona
+                cliente.Nombre,
+                cliente.Apellido,
+                cliente.Numero_Telefono,
+                zona.Nombre as zona,
+                (SELECT Litraje_Consumido FROM consumo WHERE ID_Cliente = cliente.ID_Cliente ORDER BY Fecha_Fin DESC LIMIT 1) AS Ultimo_Consumo,
+                (SELECT MAX(Fecha_Emision) FROM factura WHERE ID_Cliente = cliente.ID_Cliente AND Estado = 'pagado') AS Ultimo_Mes_Pagado,
+                (SELECT COUNT(*) FROM factura WHERE ID_Cliente = cliente.ID_Cliente AND Estado = 'pendiente') AS Meses_Pendientes
+            FROM cliente
+            LEFT JOIN zona ON cliente.ID_Zona = zona.ID_Zona
         `);
         res.status(200).json(result);
     } catch (err) {
@@ -27,21 +27,21 @@ exports.obtenerResumenClientes = async (req, res) => {
 exports.obtenerKPIs = async (req, res) => {
     try {
         // Número total de clientes
-        const [clientesTotales] = await pool.execute(`SELECT COUNT(*) AS totalClientes FROM Cliente`);
+        const [clientesTotales] = await pool.execute(`SELECT COUNT(*) AS totalClientes FROM cliente`);
 
         // Clientes con pagos pendientes
         const [clientesConPagosPendientes] = await pool.execute(`
-            SELECT COUNT(DISTINCT ID_Cliente) AS clientesPendientes FROM Factura WHERE Estado = 'pendiente'
+            SELECT COUNT(DISTINCT ID_Cliente) AS clientesPendientes FROM factura WHERE Estado = 'pendiente'
         `);
 
         // Ingresos del mes actual
         const [ingresosDelMes] = await pool.execute(`
-            SELECT SUM(Monto_Pagado) AS ingresosMes FROM Pago WHERE MONTH(Fecha_Pago) = MONTH(CURDATE()) AND YEAR(Fecha_Pago) = YEAR(CURDATE())
+            SELECT SUM(Monto_Pagado) AS ingresosMes FROM pago WHERE MONTH(Fecha_Pago) = MONTH(CURDATE()) AND YEAR(Fecha_Pago) = YEAR(CURDATE())
         `);
 
         // Total de litros consumidos en el mes actual
         const [litrosConsumidosMes] = await pool.execute(`
-            SELECT SUM(Litraje_Consumido) AS litrosConsumidos FROM Consumo WHERE MONTH(Fecha_Fin) = MONTH(CURDATE()) AND YEAR(Fecha_Fin) = YEAR(CURDATE())
+            SELECT SUM(Litraje_Consumido) AS litrosConsumidos FROM consumo WHERE MONTH(Fecha_Fin) = MONTH(CURDATE()) AND YEAR(Fecha_Fin) = YEAR(CURDATE())
         `);
 
         res.status(200).json({

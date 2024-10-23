@@ -7,15 +7,15 @@ exports.generarFacturaParaCliente = async (id_cliente, fecha_inicio, fecha_fin) 
     try {
         // Verificar si ya existe una factura pendiente para el rango de fechas
         const [facturaExistente] = await pool.execute(`
-            SELECT * FROM Factura 
+            SELECT * FROM factura 
             WHERE ID_Cliente = ? AND Fecha_Emision >= ? AND Fecha_Emision <= ? AND Estado = 'pendiente'
         `, [id_cliente, fecha_inicio, fecha_fin]);
 
         if (facturaExistente.length === 0) {
             // Obtener la tarifa actual del cliente
             const [tarifaCliente] = await pool.execute(`
-                SELECT t.Precio_Por_Litro FROM Cliente_Tarifa ct
-                JOIN Tarifa t ON ct.ID_Tarifa = t.ID_Tarifa
+                SELECT t.Precio_Por_Litro FROM cliente_tarifa ct
+                JOIN tarifa t ON ct.ID_Tarifa = t.ID_Tarifa
                 WHERE ct.ID_Cliente = ? AND (ct.Fecha_Fin IS NULL OR ct.Fecha_Fin >= CURDATE())
                 ORDER BY ct.Fecha_Inicio DESC LIMIT 1
             `, [id_cliente]);
@@ -47,7 +47,7 @@ exports.generarFacturaParaCliente = async (id_cliente, fecha_inicio, fecha_fin) 
 
                 // Registrar la factura por el total de meses
                 await pool.execute(`
-                    INSERT INTO Factura (ID_Cliente, Fecha_Emision, Monto, Estado) 
+                    INSERT INTO factura (ID_Cliente, Fecha_Emision, Monto, Estado) 
                     VALUES (?, CURDATE(), ?, 'pendiente')
                 `, [id_cliente, monto]);
 
@@ -71,8 +71,8 @@ exports.obtenerFacturasPendientes = async (req, res) => {
     try {
         const [facturas] = await pool.execute(`
             SELECT f.ID_Factura, c.Nombre, c.Apellido, f.Fecha_Emision, f.Monto, f.Estado
-            FROM Factura f
-            JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+            FROM factura f
+            JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
             WHERE f.Estado = 'pendiente'
         `);
         res.status(200).json(facturas);
@@ -87,8 +87,8 @@ exports.obtenerFacturasPagadas = async (req, res) => {
     try {
         const [facturas] = await pool.execute(`
             SELECT f.ID_Factura, c.Nombre, c.Apellido, f.Fecha_Emision, f.Monto, f.Estado
-            FROM Factura f
-            JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+            FROM factura f
+            JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
             WHERE f.Estado = 'pagado'
         `);
         res.status(200).json(facturas);
@@ -102,20 +102,20 @@ exports.obtenerFacturasPagadas = async (req, res) => {
 exports.generarFacturasMensuales = async (req, res) => {
     try {
         // Obtener todos los clientes
-        const [clientes] = await pool.execute('SELECT * FROM Cliente');
+        const [clientes] = await pool.execute('SELECT * FROM cliente');
 
         for (const cliente of clientes) {
             // Obtener los consumos no facturados del cliente en el último mes
             const [consumos] = await pool.execute(`
-                SELECT * FROM Consumo
+                SELECT * FROM consumo
                 WHERE ID_Cliente = ? AND Fecha_Inicio >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND Facturado = FALSE
             `, [cliente.ID_Cliente]);
 
             if (consumos.length > 0) {
                 // Obtener la tarifa actual del cliente
                 const [tarifaCliente] = await pool.execute(`
-                    SELECT t.Precio_Por_Litro FROM Cliente_Tarifa ct
-                    JOIN Tarifa t ON ct.ID_Tarifa = t.ID_Tarifa
+                    SELECT t.Precio_Por_Litro FROM cliente_tarifa ct
+                    JOIN tarifa t ON ct.ID_Tarifa = t.ID_Tarifa
                     WHERE ct.ID_Cliente = ? AND (ct.Fecha_Fin IS NULL OR ct.Fecha_Fin >= CURDATE())
                     ORDER BY ct.Fecha_Inicio DESC LIMIT 1
                 `, [cliente.ID_Cliente]);
@@ -131,13 +131,13 @@ exports.generarFacturasMensuales = async (req, res) => {
 
                     // Insertar la factura en la base de datos
                     await pool.execute(`
-                        INSERT INTO Factura (ID_Cliente, ID_Consumo, Fecha_Emision, Monto, Estado)
+                        INSERT INTO factura (ID_Cliente, ID_Consumo, Fecha_Emision, Monto, Estado)
                         VALUES (?, ?, CURDATE(), ?, 'pendiente')
                     `, [cliente.ID_Cliente, consumos[0].ID_Consumo, totalConsumo]);
 
                     // Marcar estos consumos como facturados
                     await pool.execute(`
-                        UPDATE Consumo SET Facturado = TRUE WHERE ID_Cliente = ? AND Facturado = FALSE
+                        UPDATE consumo SET Facturado = TRUE WHERE ID_Cliente = ? AND Facturado = FALSE
                     `, [cliente.ID_Cliente]);
                 }
             }
@@ -158,8 +158,8 @@ exports.descargarFacturaPDF = async (req, res) => {
         // Obtener los datos de la factura
         const [factura] = await pool.execute(`
             SELECT f.ID_Factura, c.Nombre, c.Apellido, f.Fecha_Emision, f.Monto, f.Estado
-            FROM Factura f
-            JOIN Cliente c ON f.ID_Cliente = c.ID_Cliente
+            FROM factura f
+            JOIN cliente c ON f.ID_Cliente = c.ID_Cliente
             WHERE f.ID_Factura = ?
         `, [id_factura]);
 

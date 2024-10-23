@@ -17,7 +17,7 @@ exports.registrarConsumo = async (req, res) => {
     try {
         // Registrar el consumo en la base de datos con las fechas calculadas
         await pool.execute(
-            'INSERT INTO Consumo (ID_Cliente, Fecha_Inicio, Fecha_Fin, Litraje_Consumido) VALUES (?, ?, ?, ?)',
+            'INSERT INTO consumo (ID_Cliente, Fecha_Inicio, Fecha_Fin, Litraje_Consumido) VALUES (?, ?, ?, ?)',
             [id_cliente, fechaInicio, fechaFin, litraje_consumido]
         );
 
@@ -35,7 +35,7 @@ exports.obtenerConsumosPorCliente = async (req, res) => {
     const { id_cliente } = req.params;
 
     try {
-        const [consumos] = await pool.execute('SELECT * FROM Consumo WHERE ID_Cliente = ?', [id_cliente]);
+        const [consumos] = await pool.execute('SELECT * FROM consumo WHERE ID_Cliente = ?', [id_cliente]);
         res.status(200).json(consumos);
     } catch (err) {
         console.error('Error al obtener consumos:', err);
@@ -54,7 +54,7 @@ exports.editarConsumo = async (req, res) => {
 
     try {
         await pool.execute(
-            'UPDATE Consumo SET Fecha_Inicio = ?, Fecha_Fin = ?, Litraje_Consumido = ? WHERE ID_Consumo = ?',
+            'UPDATE consumo SET Fecha_Inicio = ?, Fecha_Fin = ?, Litraje_Consumido = ? WHERE ID_Consumo = ?',
             [fecha_inicio, fecha_fin, litraje_consumido, id_consumo]
         );
         res.status(200).json({ msg: 'Consumo actualizado correctamente' });
@@ -69,7 +69,7 @@ exports.eliminarConsumo = async (req, res) => {
     const { id_consumo } = req.params;
 
     try {
-        await pool.execute('DELETE FROM Consumo WHERE ID_Consumo = ?', [id_consumo]);
+        await pool.execute('DELETE FROM consumo WHERE ID_Consumo = ?', [id_consumo]);
         res.status(200).json({ msg: 'Consumo eliminado correctamente' });
     } catch (err) {
         console.error('Error al eliminar consumo:', err);
