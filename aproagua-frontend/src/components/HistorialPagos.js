@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-
+import config from '../../config';
 const HistorialPagos = () => {
     const [pagos, setPagos] = useState([]);
 
@@ -10,7 +10,7 @@ const HistorialPagos = () => {
     useEffect(() => {
         const obtenerPagos = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/pagos', {
+                const res = await axios.get(`${config.API_BASE_URL}/api/pagos`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setPagos(res.data);
@@ -25,7 +25,7 @@ const HistorialPagos = () => {
     const handleRevertirPago = async (idPago) => {
         if (window.confirm('¿Estás seguro de que deseas anular este pago?')) {
             try {
-                await axios.delete(`http://localhost:3000/api/pagos/${idPago}`, {
+                await axios.delete(`${config.API_BASE_URL}/api/pagos/${idPago}`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setPagos(pagos.filter(pago => pago.ID_Pago !== idPago));

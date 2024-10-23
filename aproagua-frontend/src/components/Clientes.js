@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import './Clientes.css';
-
+import config from '../../config';
 const Clientes = () => {
     const [clientes, setClientes] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +28,7 @@ const Clientes = () => {
     // Función para obtener clientes desde la API
     const fetchClientes = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/clientes', {
+            const res = await axios.get(`${config.API_BASE_URL}/api/clientes`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             setClientes(res.data);
@@ -54,7 +54,7 @@ const Clientes = () => {
     const handleEliminarCliente = async (id_cliente) => {
         if (window.confirm('¿Estás seguro de eliminar este cliente?')) {
             try {
-                await axios.delete(`http://localhost:3000/api/clientes/${id_cliente}`, {
+                await axios.delete(`${config.API_BASE_URL}/api/clientes/${id_cliente}`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 fetchClientes();  // Refrescar la lista de clientes después de eliminar
@@ -77,7 +77,7 @@ const Clientes = () => {
         }
 
         try {
-            const res = await axios.get(`http://localhost:3000/api/clientes/${id_cliente}/historial-tarifas`, {
+            const res = await axios.get(`${config.API_BASE_URL}/api/clientes/${id_cliente}/historial-tarifas`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             setHistorialTarifas(res.data);

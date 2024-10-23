@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Bar, Pie } from 'react-chartjs-2';
+import config from '../../config';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -43,7 +44,7 @@ const DashboardGeneral = () => {
         // Obtener el resumen de clientes
         const obtenerClientes = async () => {
             try {
-                const resClientes = await axios.get('http://localhost:3000/api/dashboard/resumen-clientes', {
+                const resClientes = await axios.get(`${config.API_BASE_URL}/api/dashboard/resumen-clientes`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setClientes(resClientes.data);
@@ -55,7 +56,7 @@ const DashboardGeneral = () => {
         // Obtener los KPIs
         const obtenerKPIs = async () => {
             try {
-                const resKpis = await axios.get('http://localhost:3000/api/dashboard/kpis', {
+                const resKpis = await axios.get(`${config.API_BASE_URL}/api/dashboard/kpis`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setKpis(resKpis.data);
@@ -70,7 +71,7 @@ const DashboardGeneral = () => {
     // Generar PDF del corte de cuenta
     const handleGenerarPDF = async (clienteId) => {
         try {
-            const res = await axios.get(`http://localhost:3000/api/dashboard/generar-pdf/${clienteId}`, {
+            const res = await axios.get(`${config.API_BASE_URL}/api/dashboard/generar-pdf/${clienteId}`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             alert(res.data.msg);  // Solo para mostrar un mensaje, se puede implementar la descarga del PDF

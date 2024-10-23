@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import axios from 'axios';
+import config from '../../config';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -33,19 +34,19 @@ const DashboardFinanciero = () => {
                 setLoading(true);
 
                 // Obtener balance general
-                const resBalance = await axios.get('http://localhost:3000/api/finanzas/balance-general', {
+                const resBalance = await axios.get(`${config.API_BASE_URL}/api/finanzas/balance-general`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setBalanceGeneral(resBalance.data);
 
                 // Obtener egresos
-                const resEgresos = await axios.get('http://localhost:3000/api/finanzas/egresos', {
+                const resEgresos = await axios.get(`${config.API_BASE_URL}/api/finanzas/egresos`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setEgresos(resEgresos.data);
 
                 // Obtener detalles de ingresos (historial de pagos)
-                const resIngresos = await axios.get('http://localhost:3000/api/finanzas/ingresos-detalles', {
+                const resIngresos = await axios.get(`${config.API_BASE_URL}/api/finanzas/ingresos-detalles`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setIngresos(resIngresos.data);

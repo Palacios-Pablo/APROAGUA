@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';  // Importar FontAwesomeIcon
 import { faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons';  // Íconos de Excel y PDF
 import './Reportes.css';  // Asegúrate de enlazar el archivo CSS
-
+import config from '../../config';
 
 const Reportes = () => {
     const [tipoReporte, setTipoReporte] = useState('');
@@ -18,7 +18,7 @@ const Reportes = () => {
         }
 
         try {
-            const res = await axios.get(`http://localhost:3000/api/reportes/${tipoReporte}`, {
+            const res = await axios.get(`${config.API_BASE_URL}/api/reportes/${tipoReporte}`, {
                 params: { fechaInicio, fechaFin },
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
@@ -31,7 +31,7 @@ const Reportes = () => {
 
     const handleDescargarExcel = async () => {
         try {
-            const res = await axios.get(`http://localhost:3000/api/reportes/descargar/excel`, {
+            const res = await axios.get(`${config.API_BASE_URL}/api/reportes/descargar/excel`, {
                 params: { tipo: tipoReporte, fechaInicio, fechaFin },
                 headers: { 'x-auth-token': localStorage.getItem('token') },
                 responseType: 'blob'  // Necesario para manejar descargas de archivos
@@ -49,7 +49,7 @@ const Reportes = () => {
 
     const handleDescargarPDF = async () => {
         try {
-            const res = await axios.get(`http://localhost:3000/api/reportes/descargar/pdf`, {
+            const res = await axios.get(`${config.API_BASE_URL}/api/reportes/descargar/pdf`, {
                 params: { tipo: tipoReporte, fechaInicio, fechaFin },
                 headers: { 'x-auth-token': localStorage.getItem('token') },
                 responseType: 'blob'

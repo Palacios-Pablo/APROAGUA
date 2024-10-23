@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';  // Para recibir el estado
+import config from '../../config';
 
 const RegistrarPago = ({ onPagoRegistrado }) => {
     const [facturasPendientes, setFacturasPendientes] = useState([]);
@@ -20,7 +21,7 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
     useEffect(() => {
         const obtenerFacturasPendientes = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/facturas/pendientes', {
+                const res = await axios.get(`${config.API_BASE_URL}/api/facturas/pendientes`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setFacturasPendientes(res.data);
@@ -39,7 +40,7 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
         }
 
         try {
-            const res = await axios.post('http://localhost:3000/api/pagos', {
+            const res = await axios.post(`${config.API_BASE_URL}/api/pagos`, {
                 id_factura: idFactura,
                 fecha_pago: fechaPago,
                 monto_pagado: parseFloat(montoPagado),

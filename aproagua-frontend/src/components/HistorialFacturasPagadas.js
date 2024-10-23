@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons';
-
+import config from '../../config';
 const HistorialFacturasPagadas = () => {
     const [facturas, setFacturas] = useState([]);
     const [busqueda, setBusqueda] = useState(''); // Estado para el filtro de búsqueda
@@ -11,7 +11,7 @@ const HistorialFacturasPagadas = () => {
     useEffect(() => {
         const obtenerFacturasPagadas = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/facturas/pagadas', {
+                const res = await axios.get(`${config.API_BASE_URL}/api/facturas/pagadas`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setFacturas(res.data);
@@ -25,7 +25,7 @@ const HistorialFacturasPagadas = () => {
     // Función para descargar la factura en PDF
     const handleDescargarPDF = async (idFactura) => {
         try {
-            const res = await axios.get(`http://localhost:3000/api/facturas/${idFactura}/pdf`, {
+            const res = await axios.get(`${config.API_BASE_URL}/api/facturas/${idFactura}/pdf`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') },
                 responseType: 'blob'  // Importante para descargar archivos
             });

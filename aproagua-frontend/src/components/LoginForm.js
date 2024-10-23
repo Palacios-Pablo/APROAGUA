@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';  // Importamos axios para hacer la solicitud al backend
 import './LoginForm.css';  // Asegúrate de que los estilos para el modal estén configurados correctamente
-
+import config from '../../config';
 const LoginForm = ({ onClose }) => {
     const [username, setUsername] = useState('');  // Estado para almacenar el usuario
     const [password, setPassword] = useState('');  // Estado para almacenar la contraseña
@@ -12,7 +12,7 @@ const LoginForm = ({ onClose }) => {
         e.preventDefault();  // Evitar que el formulario recargue la página
 
         try {
-            const res = await axios.post('http://localhost:3000/api/auth/login', {
+            const res = await axios.post(`${config.API_BASE_URL}/api/auth/login`, {
                 nombre_usuario: username,
                 password: password
             }, {

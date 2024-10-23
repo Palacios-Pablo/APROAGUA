@@ -4,7 +4,7 @@ import axios from 'axios';  // Para hacer peticiones al backend
 import './Egresos.css'; // Estilos personalizados
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';  // Iconos
-
+import config from '../../config';
 const Egresos = () => {
     const [egresos, setEgresos] = useState([]); // Lista de egresos
     const [isModalOpen, setIsModalOpen] = useState(false); // Estado para abrir/cerrar el modal
@@ -18,7 +18,7 @@ const Egresos = () => {
     useEffect(() => {
         const obtenerEgresos = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/egresos', {
+                const res = await axios.get(`${config.API_BASE_URL}/api/egresos`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setEgresos(res.data);
@@ -46,7 +46,7 @@ const Egresos = () => {
         if (window.confirm('¿Estás seguro de eliminar este egreso?')) {
             try {
                 // Eliminar el egreso en el backend
-                const res = await axios.delete(`http://localhost:3000/api/egresos/${id_egreso}`, {
+                const res = await axios.delete(`${config.API_BASE_URL}/api/egresos/${id_egreso}`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 
@@ -64,7 +64,7 @@ const Egresos = () => {
     // Función para actualizar la lista de egresos
     const actualizarEgresos = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/egresos', {
+            const res = await axios.get(`${config.API_BASE_URL}/api/egresos`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             setEgresos(res.data);  // Actualiza la lista de egresos
