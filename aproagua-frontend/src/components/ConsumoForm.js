@@ -1,6 +1,7 @@
 // src/components/ConsumoForm.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import config from '../../config';
 
 const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado, clienteSeleccionado }) => {
     const [clientes, setClientes] = useState([]);
@@ -14,7 +15,7 @@ const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado, clienteSelecc
     useEffect(() => {
         const obtenerClientes = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/clientes', {
+                const res = await axios.get(`${config.API_BASE_URL}/api/clientes`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setClientes(res.data);
@@ -47,7 +48,7 @@ const ConsumoForm = ({ onConsumoRegistrado, onClienteSeleccionado, clienteSelecc
         }
 
         try {
-            await axios.post('http://localhost:3000/api/consumos', {
+            await axios.post(`${config.API_BASE_URL}/api/consumos`, {
                 id_cliente: idCliente,
                 mes_inicio: mesInicio,
                 año_inicio: añoInicio,

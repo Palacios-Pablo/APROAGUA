@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {faTrashAlt} from '@fortawesome/free-solid-svg-icons';  // Icono de agua
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import config from '../../config';
 
 const ConsumoHistorial = ({ idCliente, onConsumoActualizado }) => {
     const [consumos, setConsumos] = useState([]);
@@ -10,7 +10,7 @@ const ConsumoHistorial = ({ idCliente, onConsumoActualizado }) => {
     useEffect(() => {
         const obtenerConsumos = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/consumos/${idCliente}`, {
+                const res = await axios.get(`${config.API_BASE_URL}/api/consumos/${idCliente}`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setConsumos(res.data);
@@ -27,7 +27,7 @@ const ConsumoHistorial = ({ idCliente, onConsumoActualizado }) => {
     const handleEliminar = async (idConsumo) => {
         if (window.confirm('¿Estás seguro de eliminar este consumo?')) {
             try {
-                await axios.delete(`http://localhost:3000/api/consumos/${idConsumo}`, {
+                await axios.delete(`${config.API_BASE_URL}/api/consumos/${idConsumo}`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setConsumos(consumos.filter(consumo => consumo.ID_Consumo !== idConsumo));

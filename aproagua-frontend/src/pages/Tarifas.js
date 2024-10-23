@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
-
+import config from '../../config';
 const Tarifas = () => {
     const [tarifas, setTarifas] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -17,7 +17,7 @@ const Tarifas = () => {
     const cargarTarifas = async () => {
         try {
             // Incluir el token JWT en el encabezado
-            const res = await axios.get('http://localhost:3000/api/tarifas', {
+            const res = await axios.get(`${config.API_BASE_URL}/api/tarifas`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }  // Enviar el token JWT
             });
             setTarifas(res.data);
@@ -49,13 +49,13 @@ const Tarifas = () => {
 
             if (tarifaEditada) {
                 // Editar una tarifa existente
-                await axios.put(`http://localhost:3000/api/tarifas/${tarifaEditada.ID_Tarifa}`, {
+                await axios.put(`${config.API_BASE_URL}/api/tarifas/${tarifaEditada.ID_Tarifa}`, {
                     descripcion,
                     precio_por_litro: precioPorLitro
                 }, { headers });
             } else {
                 // Crear una nueva tarifa
-                await axios.post('http://localhost:3000/api/tarifas', {
+                await axios.post(`${config.API_BASE_URL}/api/tarifas`, {
                     descripcion,
                     precio_por_litro: precioPorLitro
                 }, { headers });
@@ -70,7 +70,7 @@ const Tarifas = () => {
     const handleEliminarTarifa = async (id_tarifa) => {
         try {
             // Eliminar tarifa con el token en el encabezado
-            await axios.delete(`http://localhost:3000/api/tarifas/${id_tarifa}`, {
+            await axios.delete(`${config.API_BASE_URL}/api/tarifas/${id_tarifa}`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             cargarTarifas();  // Recargar las tarifas después de eliminar

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import config from '../../config';
 const EgresoModal = ({ isOpen, onClose, egresoSeleccionado, actualizarEgresos }) => {
     const [fecha, setFecha] = useState('');
     const [descripcion, setDescripcion] = useState('');
@@ -27,7 +27,7 @@ const EgresoModal = ({ isOpen, onClose, egresoSeleccionado, actualizarEgresos })
         try {
             if (egresoSeleccionado) {
                 // Editar egreso
-                const res = await axios.put(`http://localhost:3000/api/egresos/${egresoSeleccionado.ID_Egreso}`, {
+                const res = await axios.put(`${config.API_BASE_URL}/api/egresos/${egresoSeleccionado.ID_Egreso}`, {
                     fecha, descripcion, monto, id_balance  // Mandamos el ID_Balance junto con los demás datos
                 }, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
@@ -38,7 +38,7 @@ const EgresoModal = ({ isOpen, onClose, egresoSeleccionado, actualizarEgresos })
                 }
             } else {
                 // Crear nuevo egreso
-                const res = await axios.post('http://localhost:3000/api/egresos', {
+                const res = await axios.post(`${config.API_BASE_URL}/api/egresos`, {
                     fecha, descripcion, monto, id_balance  // Mandamos el ID_Balance junto con los demás datos
                 }, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }

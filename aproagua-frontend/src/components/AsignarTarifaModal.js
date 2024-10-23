@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
+import config from '../../config';
 
 const AsignarTarifaModal = ({ isOpen, onClose, cliente }) => {
     const [tarifas, setTarifas] = useState([]);
@@ -12,7 +13,7 @@ const AsignarTarifaModal = ({ isOpen, onClose, cliente }) => {
     useEffect(() => {
         const cargarTarifas = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/tarifas', {
+                const res = await axios.get(`${config.API_BASE_URL}/api/tarifas`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setTarifas(res.data);
@@ -28,7 +29,7 @@ const AsignarTarifaModal = ({ isOpen, onClose, cliente }) => {
         e.preventDefault();
 
         try {
-            await axios.post(`http://localhost:3000/api/clientes/asignar-tarifa`, {
+            await axios.post(`${config.API_BASE_URL}/api/clientes/asignar-tarifa`, {
                 id_cliente: cliente.ID_Cliente,
                 id_tarifa: tarifaSeleccionada,
                 fecha_inicio: fechaInicio,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Importamos useNavigate para redirigir
-
+import config from '../../config';
 const HistorialFacturasPendientes = () => {
     const [facturas, setFacturas] = useState([]);
     const [busqueda, setBusqueda] = useState(''); // Estado para el filtro de búsqueda
@@ -11,7 +11,7 @@ const HistorialFacturasPendientes = () => {
     useEffect(() => {
         const obtenerFacturasPendientes = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/facturas/pendientes', {
+                const res = await axios.get(`${config.API_BASE_URL}/api/facturas/pendientes`, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
                 setFacturas(res.data);

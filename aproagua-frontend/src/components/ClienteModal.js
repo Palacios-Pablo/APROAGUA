@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
+import config from '../../config';
 
 const ClienteModal = ({ isOpen, onClose, cliente, onClienteGuardado }) => {
     const [nombre, setNombre] = useState('');
@@ -40,12 +41,12 @@ const ClienteModal = ({ isOpen, onClose, cliente, onClienteGuardado }) => {
         try {
             if (cliente) {
                 // Editar cliente
-                await axios.put(`http://localhost:3000/api/clientes/${cliente.ID_Cliente}`, nuevoCliente, {
+                await axios.put(`${config.API_BASE_URL}/api/clientes/${cliente.ID_Cliente}`, nuevoCliente, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
             } else {
                 // Crear cliente
-                await axios.post('http://localhost:3000/api/clientes', nuevoCliente, {
+                await axios.post(`${config.API_BASE_URL}/api/clientes`, nuevoCliente, {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 });
             }
