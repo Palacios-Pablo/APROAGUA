@@ -17,8 +17,22 @@ dotenv.config();  // Cargar las variables de entorno desde el archivo .env
 
 const app = express();
 
+const allowedOrigins = [
+    'http://localhost:3001', // URL para desarrollo local
+    'https://aproagua-frontend.vercel.app', // URL del dominio principal en Vercel
+    'https://aproagua-frontend-1yzhieuah-aproaguas-projects.vercel.app' // URL específica del despliegue
+  ];
+
 // Habilitar CORS para solicitudes desde http://localhost:3001
-app.use(cors({ origin: 'http://localhost:3001' }));
+app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Origen no permitido por CORS'));
+      }
+    }
+}));
 
 // Habilitar middleware para parsear JSON
 app.use(express.json());
