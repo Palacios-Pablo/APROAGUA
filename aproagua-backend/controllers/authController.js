@@ -9,7 +9,7 @@ exports.login = async (req, res) => {
 
     try {
         // Buscar el usuario en la base de datos
-        const [rows] = await pool.execute('SELECT * FROM Usuario_Administrativo WHERE Nombre_Usuario = ?', [nombre_usuario]);
+        const [rows] = await pool.execute('SELECT * FROM usuario_administrativo WHERE Nombre_Usuario = ?', [nombre_usuario]);
 
         if (rows.length === 0) {
             return res.status(400).json({ msg: 'Usuario no encontrado' });
@@ -46,7 +46,7 @@ exports.register = async (req, res) => {
 
     try {
         // Verificar si el nombre de usuario ya existe
-        const [existingUser] = await pool.execute('SELECT * FROM Usuario_Administrativo WHERE Nombre_Usuario = ?', [nombre_usuario]);
+        const [existingUser] = await pool.execute('SELECT * FROM usuario_administrativo WHERE Nombre_Usuario = ?', [nombre_usuario]);
         if (existingUser.length > 0) {
             return res.status(400).json({ msg: 'El nombre de usuario ya existe' });
         }
@@ -56,7 +56,7 @@ exports.register = async (req, res) => {
 
         // Insertar el nuevo usuario en la base de datos
         await pool.execute(
-            'INSERT INTO Usuario_Administrativo (Nombre, Apellido, Nombre_Usuario, Password_Hash, Rol) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO usuario_administrativo (Nombre, Apellido, Nombre_Usuario, Password_Hash, Rol) VALUES (?, ?, ?, ?, ?)',
             [nombre, apellido, nombre_usuario, passwordHash, rol]
         );
 
