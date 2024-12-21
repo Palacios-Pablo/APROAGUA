@@ -5,7 +5,8 @@ const {
     obtenerFacturasPagadas, 
     generarFacturasMensuales, 
     descargarFacturaPDF, 
-    generarFacturaParaCliente // Añadimos la nueva función para generar factura por cliente
+    generarFacturaParaCliente,
+    obtenerEstadoPagosMensuales // Agregar el controlador correspondiente
 } = require('../controllers/facturaController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
@@ -14,6 +15,18 @@ router.get('/pendientes', authMiddleware, obtenerFacturasPendientes);  // Factur
 router.get('/pagadas', authMiddleware, obtenerFacturasPagadas);        // Facturas pagadas
 router.post('/generar', authMiddleware, generarFacturasMensuales);     // Generar facturas mensuales
 router.get('/:id_factura/pdf', authMiddleware, descargarFacturaPDF);   // Descargar factura en PDF
+
+// Nueva ruta para obtener estado de pagos mensuales
+router.get('/pagos/:id_cliente/:anio', authMiddleware, async (req, res) => {
+    const { id_cliente, anio } = req.params;
+    try {
+        const estadoPagos = await obtenerEstadoPagosMensuales(id_cliente, anio);
+        res.status(200).json(estadoPagos);
+    } catch (err) {
+        console.error('Error al obtener el estado de pagos:', err);
+        res.status(500).json({ msg: 'Error al obtener el estado de pagos' });
+    }
+});
 
 // Nueva ruta para generar factura de un cliente específico
 router.post('/cliente/:id_cliente/generar', authMiddleware, async (req, res) => {

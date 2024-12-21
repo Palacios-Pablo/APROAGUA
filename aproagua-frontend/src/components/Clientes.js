@@ -1,15 +1,17 @@
 // src/components/Clientes.js
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faHistory, faTint, faReceipt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faHistory, faTint, faReceipt, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import ClienteModal from './ClienteModal';
 import AsignarTarifaModal from './AsignarTarifaModal';
+import CalendarioPagosModal from './CalendarioPagosModal'; // Importa el nuevo componente
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import './Clientes.css';
 import config from '../config';
+
 const Clientes = () => {
     const [clientes, setClientes] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,6 +24,10 @@ const Clientes = () => {
     const [itemsPerPage] = useState(5);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [visibleHistorial, setVisibleHistorial] = useState(null);
+
+    // Estado para el modal de calendario
+    const [isCalendarioOpen, setIsCalendarioOpen] = useState(false);
+    const [clienteParaCalendario, setClienteParaCalendario] = useState(null);
 
     const navigate = useNavigate();
 
@@ -89,6 +95,16 @@ const Clientes = () => {
 
     const handleRegistrarConsumo = (cliente) => {
         navigate('/consumo', { state: { cliente } });
+    };
+
+    const handleAbrirCalendario = (cliente) => {
+        setClienteParaCalendario(cliente);
+        setIsCalendarioOpen(true);
+    };
+
+    const handleCerrarCalendario = () => {
+        setClienteParaCalendario(null);
+        setIsCalendarioOpen(false);
     };
 
     const handleSearchChange = (e) => {
@@ -181,6 +197,9 @@ const Clientes = () => {
                                             <button className="btn btn-info" onClick={() => handleAsignarTarifa(cliente)} data-tooltip-id="tooltip" data-tooltip-content="Asignar Tarifa">
                                                 <FontAwesomeIcon icon={faReceipt} size="lg" />
                                             </button>
+                                            <button className="btn btn-calendar" onClick={() => handleAbrirCalendario(cliente)} data-tooltip-id="tooltip" data-tooltip-content="Calendario de Pagos">
+                                                <FontAwesomeIcon icon={faCalendar} size="lg" />
+                                            </button>
                                             <button className="btn btn-consumo" onClick={() => handleRegistrarConsumo(cliente)} data-tooltip-id="tooltip" data-tooltip-content="Registrar Consumo">
                                                 <FontAwesomeIcon icon={faTint} size="lg" />
                                             </button>
@@ -236,6 +255,14 @@ const Clientes = () => {
                         onClienteGuardado={fetchClientes}  // Refrescar la lista de clientes después de guardar
                     />
                     <AsignarTarifaModal isOpen={isTarifaModalOpen} onClose={() => setIsTarifaModalOpen(false)} cliente={clienteParaTarifa} />
+                    
+                    {/* Modal para el calendario */}
+                    {isCalendarioOpen && (
+                        <CalendarioPagosModal
+                            cliente={clienteParaCalendario}
+                            onClose={handleCerrarCalendario}
+                        />
+                    )}
                 </div>
             </section>
             <Tooltip id="tooltip" />
