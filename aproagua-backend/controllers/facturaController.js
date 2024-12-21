@@ -2,6 +2,35 @@ const pool = require('../config/dbconfig');
 const PDFDocument = require('pdfkit');  // Para generar PDFs en Node.js
 
 
+// Función para obtener estado de pagos mensuales por cliente y año
+exports.obtenerEstadoPagosMensuales = async (id_cliente, anio) => {
+    // Arreglo base con los meses
+    const meses = Array.from({ length: 12 }, (_, i) => ({
+        mes: i + 1,
+        estado: 'pendiente', // Default a pendiente
+    }));
+
+    try {
+        // Obtener facturas del cliente para el año especificado
+        const [facturas] = await pool.execute(`
+            SELECT MONTH(Fecha_Emision) AS Mes, Estado
+            FROM factura
+            WHERE ID_Cliente = ? AND YEAR(Fecha_Emision) = ?
+        `, [id_cliente, anio]);
+
+        // Mapear los estados de los pagos a los meses
+        facturas.forEach(factura => {
+            const mesIndex = factura.Mes - 1; // Meses en base 0 para índices
+            meses[mesIndex].estado = factura.Estado === 'pagado' ? 'pagado' : 'pendiente';
+        });
+
+        return meses;
+    } catch (err) {
+        console.error('Error al consultar estado de pagos:', err);
+        throw new Error('Error al consultar estado de pagos');
+    }
+};
+
 // Generar factura para un cliente en base a los meses enviados
 exports.generarFacturaParaCliente = async (id_cliente, fecha_inicio, fecha_fin) => {
     try {
