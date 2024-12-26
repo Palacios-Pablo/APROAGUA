@@ -70,6 +70,7 @@ button.btn-warning,
 button.btn-danger,
 button.btn-history,
 button.btn-consumo,
+button.btn-calendar,
 button.btn-info{
     padding: 5px 8px;  /* Reducimos el padding para hacerlos más pequeños */
     font-size: 1rem;   /* Reducimos el tamaño del ícono */
