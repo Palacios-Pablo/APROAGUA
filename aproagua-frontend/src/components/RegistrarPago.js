@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';  // Para recibir el estado
+import { useLocation } from 'react-router-dom'; // Para recibir el estado
 import config from '../config';
 
 const RegistrarPago = ({ onPagoRegistrado }) => {
@@ -8,7 +8,7 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
     const [idFactura, setIdFactura] = useState('');
     const [fechaPago, setFechaPago] = useState('');
     const [montoPagado, setMontoPagado] = useState('');
-    const location = useLocation();  // Hook para acceder al state
+    const location = useLocation(); // Hook para acceder al estado
 
     // Obtener el ID de la factura de la navegación, si existe
     useEffect(() => {
@@ -32,6 +32,25 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
         obtenerFacturasPendientes();
     }, []);
 
+    // Establecer la fecha actual al cargar el formulario
+    useEffect(() => {
+        const hoy = new Date();
+        const fechaHoy = hoy.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        setFechaPago(fechaHoy);
+    }, []);
+
+    // Actualizar el monto al seleccionar una factura
+    useEffect(() => {
+        if (idFactura) {
+            const facturaSeleccionada = facturasPendientes.find(factura => factura.ID_Factura === idFactura);
+            if (facturaSeleccionada) {
+                setMontoPagado(facturaSeleccionada.Monto); // Asignar el monto automáticamente
+            }
+        } else {
+            setMontoPagado('');
+        }
+    }, [idFactura, facturasPendientes]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!idFactura || !fechaPago || !montoPagado) {
@@ -40,6 +59,7 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
         }
 
         try {
+            // Registrar el pago
             const res = await axios.post(`${config.API_BASE_URL}/api/pagos`, {
                 id_factura: idFactura,
                 fecha_pago: fechaPago,
@@ -49,10 +69,9 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
             });
 
             alert('Pago registrado correctamente');
-            setIdFactura('');
-            setFechaPago('');
-            setMontoPagado('');
-            if (onPagoRegistrado) onPagoRegistrado();  // Refresca el historial de pagos
+            
+            // Abrir el enlace en una nueva pestaña
+            window.open('https://felgtaws.digifact.com.gt/facturas/indexfactura', '_blank');
         } catch (err) {
             console.error('Error al registrar pago', err);
             alert('Error al registrar pago');
@@ -73,7 +92,7 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
                     <option value="">Seleccionar factura</option>
                     {facturasPendientes.map(factura => (
                         <option key={factura.ID_Factura} value={factura.ID_Factura}>
-                            {factura.Nombre} {factura.Apellido} - {factura.Monto} 
+                            {factura.Nombre} {factura.Apellido} - {factura.Monto}
                         </option>
                     ))}
                 </select>
@@ -85,7 +104,7 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
                     type="date"
                     className="form-control"
                     value={fechaPago}
-                    onChange={(e) => setFechaPago(e.target.value)}
+                    onChange={(e) => setFechaPago(e.target.value)} // Permitir edición
                     required
                 />
             </div>
@@ -97,7 +116,7 @@ const RegistrarPago = ({ onPagoRegistrado }) => {
                     step="0.01"
                     className="form-control"
                     value={montoPagado}
-                    onChange={(e) => setMontoPagado(e.target.value)}
+                    readOnly // Monto no editable
                     required
                 />
             </div>
