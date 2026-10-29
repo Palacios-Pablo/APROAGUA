@@ -1,0 +1,6 @@
+# Variables de entorno (credenciales). Nunca subir.
+.env
+.env.*
+!.env.example
+
+node_modules/
